@@ -4,6 +4,11 @@ import (
 	"github.com/rivo/tview"
 )
 
+const (
+	IconFolder = "\U0001F4C1" // 📁
+	IconFile   = "\U0001F4C4" // 📄
+)
+
 // updateList replaces the contents of the given list with the
 // entries from the specified directory.
 //
@@ -33,7 +38,11 @@ func (a *App) updateList(list *tview.List, path string) {
 	}
 
 	for _, item := range items {
-		list.AddItem(item, "", 0, nil)
+		t := IconFile
+		if item.IsDir {
+			t = IconFolder
+		}
+		list.AddItem(t+item.Name, "", 0, nil)
 	}
 }
 

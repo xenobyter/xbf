@@ -31,6 +31,8 @@ func newApp() *App {
 		i18n:    newI18n(),
 	}
 
+	// Attempt to get the current working directory. If it fails, set an error message
+	// in both leftWd and rightWd to inform the user.
 	if wd, err := getWd(); err != nil {
 		errText := a.i18n.T(MsgErrGetWd) + ": " + err.Error()
 		a.leftWd = errText
@@ -39,6 +41,7 @@ func newApp() *App {
 		a.leftWd = wd
 		a.rightWd = wd
 	}
+
 	a.setHeader(a.leftWd)
 	a.updateList(a.tLeft, "")
 	a.updateList(a.tRight, "")
