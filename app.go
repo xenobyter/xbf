@@ -13,6 +13,8 @@ type App struct {
 	tLeft   *tview.List
 	tRight  *tview.List
 
+	i18n *I18n
+
 	leftWd  string // Current working directory for the left pane
 	rightWd string // Current working directory for the right pane
 }
@@ -26,11 +28,13 @@ func newApp() *App {
 		tFooter: tview.NewTextView(),
 		tLeft:   tview.NewList().ShowSecondaryText(false),
 		tRight:  tview.NewList().ShowSecondaryText(false),
+		i18n:    newI18n(),
 	}
 
 	if wd, err := getWd(); err != nil {
-		a.leftWd = "Error retrieving working directory: " + err.Error()
-		a.rightWd = "Error retrieving working directory: " + err.Error()
+		errText := a.i18n.T(MsgErrGetWd) + ": " + err.Error()
+		a.leftWd = errText
+		a.rightWd = errText
 	} else {
 		a.leftWd = wd
 		a.rightWd = wd

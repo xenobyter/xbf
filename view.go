@@ -13,14 +13,14 @@ import (
 func (a *App) updateList(list *tview.List, path string) {
 	list.Clear()
 
-	showError := func(msg string, err error) {
-		list.AddItem(msg+": "+err.Error(), "", 0, nil)
+	showError := func(msgKey MsgKey, err error) {
+		list.AddItem(a.i18n.T(msgKey)+": "+err.Error(), "", 0, nil)
 	}
 
 	if path == "" {
 		p, err := getWd()
 		if err != nil {
-			showError("Error retrieving working directory", err)
+			showError(MsgErrGetWd, err)
 			return
 		}
 		path = p
@@ -28,7 +28,7 @@ func (a *App) updateList(list *tview.List, path string) {
 
 	items, err := readDir(path)
 	if err != nil {
-		showError("Error reading directory", err)
+		showError(MsgErrReadDir, err)
 		return
 	}
 
@@ -39,5 +39,5 @@ func (a *App) updateList(list *tview.List, path string) {
 
 // setHeader updates the header with the given path.
 func (a *App) setHeader(path string) {
-	a.tHeader.SetText("Current Working Directory: " + path)
+	a.tHeader.SetText(a.i18n.T(MsgCurrentWd, path))
 }
