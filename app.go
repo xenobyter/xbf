@@ -15,8 +15,10 @@ type App struct {
 
 	i18n *I18n
 
-	leftWd  string // Current working directory for the left pane
-	rightWd string // Current working directory for the right pane
+	leftWd     string
+	leftItems  []FileInfo
+	rightWd    string
+	rightItems []FileInfo
 }
 
 // newApp creates a new application instance with all UI components
@@ -26,8 +28,8 @@ func newApp() *App {
 		tApp:    tview.NewApplication(),
 		tHeader: tview.NewTextView(),
 		tFooter: tview.NewTextView(),
-		tLeft:   tview.NewList().ShowSecondaryText(false),
-		tRight:  tview.NewList().ShowSecondaryText(false),
+		tLeft:   tview.NewList().ShowSecondaryText(false).SetSelectedFocusOnly(true),
+		tRight:  tview.NewList().ShowSecondaryText(false).SetSelectedFocusOnly(true),
 		i18n:    newI18n(),
 	}
 
@@ -72,4 +74,36 @@ func (a *App) run() error {
 		AddPage("main", grid, true, true)
 
 	return a.tApp.SetRoot(a.tPages, true).SetFocus(a.tLeft).Run()
+}
+
+func (a *App) getActiveList() *tview.List {
+	if a.tApp.GetFocus() == a.tLeft {
+		return a.tLeft
+	}
+	return a.tRight
+}
+
+// getItemsFor returns the file list associated with the given UI list.
+func (a *App) getItemsFor(list *tview.List) []FileInfo {
+	if list == a.tLeft {
+		return a.leftItems
+	}
+	return a.rightItems
+}
+
+// getWdFor returns the working directory associated with the given UI list.
+func (a *App) getWdFor(list *tview.List) string {
+	if list == a.tLeft {
+		return a.leftWd
+	}
+	return a.rightWd
+}
+
+// setWdFor sets the working directory for the given UI list.
+func (a *App) setWdFor(list *tview.List, wd string) {
+	if list == a.tLeft {
+		a.leftWd = wd
+	} else {
+		a.rightWd = wd
+	}
 }

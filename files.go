@@ -9,9 +9,10 @@ import (
 
 // FileInfo holds basic metadata about a file or directory entry.
 type FileInfo struct {
-	Name  string // Name of the file or directory
-	IsDir bool   // Whether the entry is a directory
-	Size  int64  // File size in bytes
+	Name  string
+	Path  string
+	IsDir bool
+	Size  int64
 }
 
 // getWd returns the current working directory.
@@ -58,6 +59,7 @@ func readDir(path string) ([]FileInfo, error) {
 
 		files = append(files, FileInfo{
 			Name:  entry.Name(),
+			Path:  path,
 			IsDir: entry.IsDir(),
 			Size:  info.Size(),
 		})
