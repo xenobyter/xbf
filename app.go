@@ -46,6 +46,10 @@ func newApp() *App {
 	a.updateList(a.tLeft, "")
 	a.updateList(a.tRight, "")
 
+	// Register inputhandlers
+	a.tLeft.SetInputCapture(a.handleInput)
+	a.tRight.SetInputCapture(a.handleInput)
+
 	return a
 }
 
