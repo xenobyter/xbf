@@ -19,6 +19,8 @@ type App struct {
 	leftItems  []FileInfo
 	rightWd    string
 	rightItems []FileInfo
+
+	selection Selection
 }
 
 // newApp creates a new application instance with all UI components

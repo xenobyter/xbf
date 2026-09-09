@@ -18,8 +18,35 @@ func normalizeAction(event *tcell.EventKey) string {
 		return "right"
 	case event.Key() == tcell.KeyLeft:
 		return "left"
+	case event.Rune() == 's', event.Rune() == ' ':
+		return "select"
 	}
 	return ""
+}
+
+// dirListKeyActions maps action names to handlers for the directory view.
+var dirListKeyActions = map[string]actionFunc{
+	"quit": func(a *App, _ int) {
+		a.tApp.Stop()
+	},
+	"tab": func(a *App, _ int) {
+		a.switchPane()
+	},
+	"right": func(a *App, idx int) {
+		activeList := a.getActiveList()
+		a.enterDirectory(activeList, idx)
+		a.selection.Clear(activeList)
+	},
+	"left": func(a *App, _ int) {
+		activeList := a.getActiveList()
+		a.leaveDirectory(activeList)
+		a.selection.Clear(activeList)
+	},
+	"select": func(a *App, idx int) {
+		activeList := a.getActiveList()
+		a.selection.ToggelItem(a.getItemsFor(activeList)[idx], activeList)
+		a.updateListItem(activeList, idx)
+	},
 }
 
 // handleInput dispatches keyboard events to registered action handlers.
@@ -35,20 +62,4 @@ func (a *App) handleInput(event *tcell.EventKey) *tcell.EventKey {
 	}
 
 	return event // fall through for unhandled keys
-}
-
-// dirListKeyActions maps action names to handlers for the directory view.
-var dirListKeyActions = map[string]actionFunc{
-	"quit": func(a *App, _ int) {
-		a.tApp.Stop()
-	},
-	"tab": func(a *App, _ int) {
-		a.switchPane()
-	},
-	"right": func(a *App, idx int) {
-		a.enterDirectory(a.getActiveList(), idx)
-	},
-	"left": func(a *App, _ int) {
-		a.leaveDirectory(a.getActiveList())
-	},
 }

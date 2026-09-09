@@ -46,12 +46,32 @@ func (a *App) updateList(list *tview.List, path string) {
 	}
 
 	for _, item := range items {
-		t := IconFile
+		icon := IconFile
 		if item.IsDir {
-			t = IconFolder
+			icon = IconFolder
 		}
-		list.AddItem(t+item.Name, "", 0, nil)
+		list.AddItem(icon+item.Name, "", 0, nil)
 	}
+}
+
+// updateListItem updates a single item in the list with the current selection state.
+// This avoids reloading the entire directory and preserves the cursor position.
+func (a *App) updateListItem(list *tview.List, idx int) {
+	items := a.getItemsFor(list)
+	if idx < 0 || idx >= len(items) {
+		return
+	}
+
+	item := items[idx]
+	icon := IconFile
+	if item.IsDir {
+		icon = IconFolder
+	}
+	style := ""
+	if a.selection.IsSelected(item.Name, list) {
+		style = "[red]"
+	}
+	list.SetItemText(idx, style+icon+item.Name, "")
 }
 
 // setHeader updates the header text.
