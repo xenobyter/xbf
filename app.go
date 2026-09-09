@@ -85,6 +85,19 @@ func (a *App) getActiveList() *tview.List {
 	return a.tRight
 }
 
+// getInactiveList returns the list belonging to the inactive pane.
+func (a *App) getInactiveList() *tview.List {
+	if a.tApp.GetFocus() == a.tLeft {
+		return a.tRight
+	}
+	return a.tLeft
+}
+
+// getTargetWd returns the working directory of the inactive pane.
+func (a *App) getTargetWd() string {
+	return a.getWdFor(a.getInactiveList())
+}
+
 // getItemsFor returns the file list associated with the given UI list.
 func (a *App) getItemsFor(list *tview.List) []FileInfo {
 	if list == a.tLeft {

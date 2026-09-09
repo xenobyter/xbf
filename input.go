@@ -20,6 +20,8 @@ func normalizeAction(event *tcell.EventKey) string {
 		return "left"
 	case event.Rune() == 's', event.Rune() == ' ':
 		return "select"
+	case event.Rune() == 'c':
+		return "copy"
 	}
 	return ""
 }
@@ -46,6 +48,9 @@ var dirListKeyActions = map[string]actionFunc{
 		activeList := a.getActiveList()
 		a.selection.ToggelItem(a.getItemsFor(activeList)[idx], activeList)
 		a.updateListItem(activeList, idx)
+	},
+	"copy": func(a *App, _ int) {
+		a.copySelected()
 	},
 }
 

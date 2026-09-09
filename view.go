@@ -3,6 +3,7 @@ package main
 import (
 	"path/filepath"
 
+	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
 
@@ -82,21 +83,9 @@ func (a *App) setHeader(path string) {
 // switchPane moves focus between the left and right directory panes
 // and updates the header to reflect the active pane.
 func (a *App) switchPane() {
-	curr := a.tApp.GetFocus()
-
-	var target *tview.List
-	var wd string
-
-	if curr == a.tLeft {
-		target = a.tRight
-		wd = a.rightWd
-	} else {
-		target = a.tLeft
-		wd = a.leftWd
-	}
-
+	target := a.getInactiveList()
 	a.tApp.SetFocus(target)
-	a.setHeader(wd)
+	a.setHeader(a.getWdFor(target))
 }
 
 // changeDir updates the working directory for the list, refreshes the view,
@@ -131,4 +120,45 @@ func (a *App) leaveDirectory(list *tview.List) {
 	}
 
 	a.changeDir(list, parent)
+}
+
+// setFooter sets the status message and color in the footer bar.
+func (a *App) setFooter(msg string, color tcell.Color) {
+	a.tFooter.SetText(msg).SetTextColor(color)
+}
+
+// refreshPanes clears the active pane's selection and reloads both pane lists.
+//
+// It reserves the currently selected Items
+func (a *App) refreshPanes() {
+	activePane := a.getActiveList()
+	activeCurrentItem := activePane.GetCurrentItem()
+	inactivePane := a.getInactiveList()
+	inactiveCurrentItem := inactivePane.GetCurrentItem()
+
+	a.selection.Clear(activePane)
+	a.updateList(activePane, a.getWdFor(activePane))
+	activePane.SetCurrentItem(activeCurrentItem)
+	a.updateList(inactivePane, a.getWdFor(inactivePane))
+	inactivePane.SetCurrentItem(inactiveCurrentItem)
+}
+
+// copySelected copies all selected files from the active pane to the target pane.
+//
+// If no files are selected it copies only the currently highlighted file. Errors are displayed in the footer.
+func (a *App) copySelected() {
+	activeList := a.getActiveList()
+	items := a.selection.GetSelectedItems(activeList)
+	if len(items) == 0 {
+		idx := activeList.GetCurrentItem()
+		items = []FileInfo{a.getItemsFor(activeList)[idx]}
+	}
+	target := a.getTargetWd()
+
+	if err := copyFiles(items, target); err != nil {
+		a.setFooter(a.i18n.T(MsgErrCopyFile)+": "+err.Error(), tcell.ColorRed)
+		return
+	}
+	a.setFooter(a.i18n.T(MsgCopyFile, len(items), target), tcell.ColorGreen)
+	a.refreshPanes()
 }

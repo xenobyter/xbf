@@ -32,6 +32,7 @@ The application provides two independent directory views, allowing users to navi
 | `→` | Enter selected directory |
 | `←` | Navigate to parent directory |
 | `s`/`Space` | Select/deselect item |
+| `c` | Copy selected Items |
 | `q`/`Esc` | Quit application |
 
 ## User Interface
@@ -103,21 +104,6 @@ LANG=de_DE.UTF-8 ./filemanager
 
 If no supported language is detected, the application falls back to English.
 
-## Project Structure
-
-```text
-.
-├── main.go
-├── app.go            # Application initialization and layout
-├── ui.go             # Directory navigation and list handling
-├── input.go          # Keyboard input processing
-├── file.go           # Filesystem utilities
-├── i18n.go           # Internationalization support
-├── file_test.go      # Sorting tests
-├── i18n_test.go      # Translation tests
-└── go.mod
-```
-
 ## Architecture
 
 ### App
@@ -152,13 +138,6 @@ Handles language detection and translation lookup.
 
 Keyboard events are normalized into symbolic actions and dispatched through a central action map.
 
-```text
-q / Esc  → quit
-Tab      → switch pane
-→        → enter directory
-←        → parent directory
-```
-
 ## Running Tests
 
 Run all tests:
@@ -187,7 +166,6 @@ Error messages are localized according to the selected language.
 
 Potential future features include:
 
-- Copy files and directories
 - Move/rename files
 - Delete operations
 - Create directories

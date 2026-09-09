@@ -21,18 +21,24 @@ const (
 	MsgCurrentWd MsgKey = iota
 	MsgErrGetWd
 	MsgErrReadDir
+	MsgErrCopyFile
+	MsgCopyFile
 )
 
 var translations = map[Lang]map[MsgKey]string{
 	LangEN: {
-		MsgCurrentWd:  "Current Working Directory: %s",
-		MsgErrGetWd:   "Error retrieving working directory",
-		MsgErrReadDir: "Error reading directory",
+		MsgCurrentWd:   "Current Working Directory: %s",
+		MsgErrGetWd:    "Error retrieving working directory",
+		MsgErrReadDir:  "Error reading directory",
+		MsgErrCopyFile: "Error copying",
+		MsgCopyFile:    "Copied %d items to %s",
 	},
 	LangDE: {
-		MsgCurrentWd:  "Aktuelles Arbeitsverzeichnis: %s",
-		MsgErrGetWd:   "Fehler beim Ermitteln des Arbeitsverzeichnisses",
-		MsgErrReadDir: "Fehler beim Lesen des Verzeichnisses",
+		MsgCurrentWd:   "Aktuelles Arbeitsverzeichnis: %s",
+		MsgErrGetWd:    "Fehler beim Ermitteln des Arbeitsverzeichnisses",
+		MsgErrReadDir:  "Fehler beim Lesen des Verzeichnisses",
+		MsgErrCopyFile: "Fehler beim Kopieren",
+		MsgCopyFile:    "%d Elemente nach %s kopiert",
 	},
 }
 
@@ -73,4 +79,3 @@ func (i *I18n) T(key MsgKey, args ...any) string {
 	}
 	return text
 }
-
