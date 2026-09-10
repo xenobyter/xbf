@@ -23,6 +23,8 @@ const (
 	MsgErrReadDir
 	MsgErrCopyFile
 	MsgCopyFile
+	MsgErrMoveFile
+	MsgMoveFile
 )
 
 var translations = map[Lang]map[MsgKey]string{
@@ -32,6 +34,8 @@ var translations = map[Lang]map[MsgKey]string{
 		MsgErrReadDir:  "Error reading directory",
 		MsgErrCopyFile: "Error copying",
 		MsgCopyFile:    "Copied %d items to %s",
+		MsgErrMoveFile: "Error moving",
+		MsgMoveFile:    "Moved %d items to %s",
 	},
 	LangDE: {
 		MsgCurrentWd:   "Aktuelles Arbeitsverzeichnis: %s",
@@ -39,6 +43,8 @@ var translations = map[Lang]map[MsgKey]string{
 		MsgErrReadDir:  "Fehler beim Lesen des Verzeichnisses",
 		MsgErrCopyFile: "Fehler beim Kopieren",
 		MsgCopyFile:    "%d Elemente nach %s kopiert",
+		MsgErrMoveFile: "Fehler beim Verschieben",
+		MsgMoveFile:    "%d Elemente nach %s verschoben",
 	},
 }
 

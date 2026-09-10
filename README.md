@@ -33,6 +33,7 @@ The application provides two independent directory views, allowing users to navi
 | `←` | Navigate to parent directory |
 | `s`/`Space` | Select/deselect item |
 | `c` | Copy selected Items |
+| `m` | Move selected Items |
 | `q`/`Esc` | Quit application |
 
 ## User Interface
@@ -166,7 +167,7 @@ Error messages are localized according to the selected language.
 
 Potential future features include:
 
-- Move/rename files
+- Rename files
 - Delete operations
 - Create directories
 - File size display

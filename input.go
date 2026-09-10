@@ -22,6 +22,8 @@ func normalizeAction(event *tcell.EventKey) string {
 		return "select"
 	case event.Rune() == 'c':
 		return "copy"
+	case event.Rune() == 'm':
+		return "move"
 	}
 	return ""
 }
@@ -51,6 +53,9 @@ var dirListKeyActions = map[string]actionFunc{
 	},
 	"copy": func(a *App, _ int) {
 		a.copySelected()
+	},
+	"move": func(a *App, _ int) {
+		a.moveSelected()
 	},
 }
 

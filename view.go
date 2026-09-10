@@ -162,3 +162,23 @@ func (a *App) copySelected() {
 	a.setFooter(a.i18n.T(MsgCopyFile, len(items), target), tcell.ColorGreen)
 	a.refreshPanes()
 }
+
+// moveSelected moves all selected files from the active pane to the target pane.
+//
+// If no files are selected it moves only the currently highlighted file. Errors are displayed in the footer.
+func (a *App) moveSelected() {
+	activeList := a.getActiveList()
+	items := a.selection.GetSelectedItems(activeList)
+	if len(items) == 0 {
+		idx := activeList.GetCurrentItem()
+		items = []FileInfo{a.getItemsFor(activeList)[idx]}
+	}
+	target := a.getTargetWd()
+
+	if err := moveFiles(items, target); err != nil {
+		a.setFooter(a.i18n.T(MsgErrMoveFile)+": "+err.Error(), tcell.ColorRed)
+		return
+	}
+	a.setFooter(a.i18n.T(MsgMoveFile, len(items), target), tcell.ColorGreen)
+	a.refreshPanes()
+}
