@@ -34,6 +34,7 @@ The application provides two independent directory views, allowing users to navi
 | `s`/`Space` | Select/deselect item |
 | `c` | Copy selected Items |
 | `m` | Move selected Items |
+| `r` | Rename selected Item |
 | `q`/`Esc` | Quit application |
 
 ## User Interface
@@ -167,13 +168,13 @@ Error messages are localized according to the selected language.
 
 Potential future features include:
 
-- Rename files
 - Delete operations
-- Create directories
-- File size display
 - Status bar information
+- File size display
+- Batch rename files
+- Create directories
 - Configurable themes
-- File preview panel
+- File preview
 
 ## License
 

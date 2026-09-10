@@ -25,27 +25,47 @@ const (
 	MsgCopyFile
 	MsgErrMoveFile
 	MsgMoveFile
+	MsgTitleInputRename
+	MsgErrRenameFile
+	MsgRenameFile
+	MsgErrInvalidName
+	MsgErrSameSrcDst
+	MsgErrSameFile
+	MsgErrOverwriteNonDirWithDir
+	MsgErrOverwriteDirWithFile
+	MsgErrRenameDirIntoItself
+	MsgErrRenameOpFailed
 )
 
 var translations = map[Lang]map[MsgKey]string{
 	LangEN: {
-		MsgCurrentWd:   "Current Working Directory: %s",
-		MsgErrGetWd:    "Error retrieving working directory",
-		MsgErrReadDir:  "Error reading directory",
-		MsgErrCopyFile: "Error copying",
-		MsgCopyFile:    "Copied %d items to %s",
-		MsgErrMoveFile: "Error moving",
-		MsgMoveFile:    "Moved %d items to %s",
+		MsgCurrentWd:        "Current Working Directory: %s",
+		MsgErrGetWd:         "Error retrieving working directory",
+		MsgErrReadDir:       "Error reading directory",
+		MsgErrCopyFile:      "Error copying",
+		MsgCopyFile:         "Copied %d items to %s",
+		MsgErrMoveFile:      "Error moving",
+		MsgMoveFile:         "Moved %d items to %s",
+		MsgTitleInputRename: "Rename Item",
+		MsgErrRenameFile:    "rename from %s to %s failed",
+		MsgRenameFile:       "Renamed %s to %s",
 	},
 	LangDE: {
-		MsgCurrentWd:   "Aktuelles Arbeitsverzeichnis: %s",
-		MsgErrGetWd:    "Fehler beim Ermitteln des Arbeitsverzeichnisses",
-		MsgErrReadDir:  "Fehler beim Lesen des Verzeichnisses",
-		MsgErrCopyFile: "Fehler beim Kopieren",
-		MsgCopyFile:    "%d Elemente nach %s kopiert",
-		MsgErrMoveFile: "Fehler beim Verschieben",
-		MsgMoveFile:    "%d Elemente nach %s verschoben",
+		MsgCurrentWd:        "Aktuelles Arbeitsverzeichnis: %s",
+		MsgErrGetWd:         "Fehler beim Ermitteln des Arbeitsverzeichnisses",
+		MsgErrReadDir:       "Fehler beim Lesen des Verzeichnisses",
+		MsgErrCopyFile:      "Fehler beim Kopieren",
+		MsgCopyFile:         "%d Elemente nach %s kopiert",
+		MsgErrMoveFile:      "Fehler beim Verschieben",
+		MsgMoveFile:         "%d Elemente nach %s verschoben",
+		MsgTitleInputRename: "Element umbenennen",
+		MsgErrRenameFile:    "Umbenennen von %s nach %s fehlgeschlagen",
+		MsgRenameFile:       "%s in %s umbenannt",
 	},
+}
+
+func defaultMsg(key MsgKey) string {
+	return translations[LangEN][key]
 }
 
 // I18n handles translations for the application.

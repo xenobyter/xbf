@@ -2,6 +2,7 @@ package main
 
 import (
 	"path/filepath"
+	"strings"
 
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
@@ -180,5 +181,36 @@ func (a *App) moveSelected() {
 		return
 	}
 	a.setFooter(a.i18n.T(MsgMoveFile, len(items), target), tcell.ColorGreen)
+	a.refreshPanes()
+}
+
+// renameSelected renames the currently selected item in the active pane.
+func (a *App) renameSelected(idx int, newName string) {
+	activeList := a.getActiveList()
+	items := a.getItemsFor(activeList)
+	if idx < 0 || idx >= len(items) {
+		return
+	}
+
+	newName = strings.TrimSpace(newName)
+	if newName == "" {
+		a.setFooter(a.i18n.T(MsgErrInvalidName), tcell.ColorRed)
+		return
+	}
+
+	item := items[idx]
+	if item.Name == newName {
+		return
+	}
+
+	src := filepath.Join(item.Path, item.Name)
+	dst := filepath.Join(item.Path, newName)
+
+	if err := renameEntry(src, dst); err != nil {
+		a.setFooter(a.i18n.T(MsgErrRenameFile, item.Name, newName), tcell.ColorRed)
+		return
+	}
+
+	a.setFooter(a.i18n.T(MsgRenameFile, item.Name, newName), tcell.ColorGreen)
 	a.refreshPanes()
 }

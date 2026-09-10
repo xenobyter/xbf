@@ -1,6 +1,8 @@
 package main
 
 import (
+	"path/filepath"
+
 	"github.com/gdamore/tcell/v2"
 )
 
@@ -24,6 +26,8 @@ func normalizeAction(event *tcell.EventKey) string {
 		return "copy"
 	case event.Rune() == 'm':
 		return "move"
+	case event.Rune() == 'r':
+		return "rename"
 	}
 	return ""
 }
@@ -56,6 +60,21 @@ var dirListKeyActions = map[string]actionFunc{
 	},
 	"move": func(a *App, _ int) {
 		a.moveSelected()
+	},
+	"rename": func(a *App, idx int) {
+		activeList := a.getActiveList()
+		item := a.getItemsFor(activeList)[idx]
+		a.ShowInputDialog(a.i18n.T(MsgTitleInputRename),
+			item.Name, // Initialer Wert
+			func(newName string) { // Callback bei Enter
+				if err := renameEntry(filepath.Join(item.Path, item.Name), filepath.Join(item.Path, newName)); err != nil {
+					a.setFooter(a.i18n.T(MsgErrRenameFile, item.Name, newName), tcell.ColorRed)
+					return
+				}
+				a.setFooter(a.i18n.T(MsgRenameFile, item.Name, newName), tcell.ColorGreen)
+				a.refreshPanes()
+			})
+
 	},
 }
 

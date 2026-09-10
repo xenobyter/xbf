@@ -1,17 +1,20 @@
 package main
 
 import (
+	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
 
 // App holds the application's UI components and shared state.
 type App struct {
-	tApp    *tview.Application
-	tPages  *tview.Pages
-	tHeader *tview.TextView
-	tFooter *tview.TextView
-	tLeft   *tview.List
-	tRight  *tview.List
+	tApp        *tview.Application
+	tPages      *tview.Pages
+	tHeader     *tview.TextView
+	tFooter     *tview.TextView
+	tLeft       *tview.List
+	tRight      *tview.List
+	tInputModal *tview.Flex
+	tInputField *tview.InputField
 
 	i18n *I18n
 
@@ -72,8 +75,28 @@ func (a *App) run() error {
 		AddItem(a.tRight, 1, 1, 1, 1, 0, 0, false).
 		AddItem(a.tFooter, 2, 0, 1, 2, 0, 0, false)
 
+	a.tInputField = tview.NewInputField().
+		SetFieldWidth(40).
+		SetAcceptanceFunc(nil)
+
+	// Rahmen & Container für das Eingabefeld
+	a.tInputModal = tview.NewFlex().
+		SetDirection(tview.FlexRow).
+		AddItem(a.tInputField, 0, 1, true)
+
+	a.tInputModal.
+		SetBorder(true).
+		SetTitleAlign(tview.AlignLeft)
+
+	// Zentrierung über ein 3x3 Grid
+	inputGrid := tview.NewGrid().
+		SetColumns(0, 50, 0).
+		SetRows(0, 3, 0).
+		AddItem(a.tInputModal, 1, 1, 1, 1, 0, 0, true)
+
 	a.tPages = tview.NewPages().
-		AddPage("main", grid, true, true)
+		AddPage("main", grid, true, true).
+		AddPage("inputModal", inputGrid, true, false)
 
 	return a.tApp.SetRoot(a.tPages, true).SetFocus(a.tLeft).Run()
 }
@@ -121,4 +144,36 @@ func (a *App) setWdFor(list *tview.List, wd string) {
 	} else {
 		a.rightWd = wd
 	}
+}
+
+// ShowInputDialog blendet das Modal ein, setzt den Titel und führt bei Enter `onSubmit` aus.
+func (a *App) ShowInputDialog(title string, initialValue string, onSubmit func(text string)) {
+	// 1. Titel & Werte setzen
+	a.tInputModal.SetTitle(title).SetTitleAlign(tview.AlignCenter)
+	a.tInputField.SetText(initialValue).SetFieldBackgroundColor(tcell.ColorBlack)
+	activePane:= a.getActiveList()
+
+	// 2. Key-Events steuern
+	a.tInputField.SetDoneFunc(func(key tcell.Key) {
+		switch key {
+		case tcell.KeyEnter:
+			text := a.tInputField.GetText()
+			a.hideInputDialog(activePane)
+			if onSubmit != nil {
+				onSubmit(text)
+			}
+		case tcell.KeyEscape:
+			a.hideInputDialog(activePane)
+		}
+	})
+
+	// 3. Modal einblenden und Fokus übergeben
+	a.tPages.ShowPage("inputModal")
+	a.tApp.SetFocus(a.tInputField)
+}
+
+func (a *App) hideInputDialog(activePane *tview.List) {
+	a.tPages.HidePage("inputModal")
+	// Fokus zurück auf das aktive Panel setzen
+	a.tApp.SetFocus(activePane)
 }
