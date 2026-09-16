@@ -33,34 +33,52 @@ const (
 	MsgErrSameFile
 	MsgErrOverwriteNonDirWithDir
 	MsgErrOverwriteDirWithFile
-	MsgErrRenameDirIntoItself
-	MsgErrRenameOpFailed
+	MsgRenameDirIntoItself
+	MsgRenameOpFailed
+	MsgErrDeleteFile
+	MsgDeleteFile
+	MsgConfirmDeleteOne
+	MsgConfirmDeleteMulti
+	MsgBtnCancel
+	MsgBtnDelete
 )
 
 var translations = map[Lang]map[MsgKey]string{
 	LangEN: {
-		MsgCurrentWd:        "Current Working Directory: %s",
-		MsgErrGetWd:         "Error retrieving working directory",
-		MsgErrReadDir:       "Error reading directory",
-		MsgErrCopyFile:      "Error copying",
-		MsgCopyFile:         "Copied %d items to %s",
-		MsgErrMoveFile:      "Error moving",
-		MsgMoveFile:         "Moved %d items to %s",
-		MsgTitleInputRename: "Rename Item",
-		MsgErrRenameFile:    "rename from %s to %s failed",
-		MsgRenameFile:       "Renamed %s to %s",
+		MsgCurrentWd:          "Current Working Directory: %s",
+		MsgErrGetWd:           "Error retrieving working directory",
+		MsgErrReadDir:         "Error reading directory",
+		MsgErrCopyFile:        "Error copying",
+		MsgCopyFile:           "Copied %d items to %s",
+		MsgErrMoveFile:        "Error moving",
+		MsgMoveFile:           "Moved %d items to %s",
+		MsgTitleInputRename:   "Rename Item",
+		MsgErrRenameFile:      "rename from %s to %s failed",
+		MsgRenameFile:         "Renamed %s to %s",
+		MsgErrDeleteFile:      "Error deleting",
+		MsgDeleteFile:         "Deleted %d items",
+		MsgConfirmDeleteOne:   "Delete \"%s\"?",
+		MsgConfirmDeleteMulti: "Delete %d selected items?",
+		MsgBtnCancel:          "Cancel",
+		MsgBtnDelete:          "Delete",
 	},
 	LangDE: {
-		MsgCurrentWd:        "Aktuelles Arbeitsverzeichnis: %s",
-		MsgErrGetWd:         "Fehler beim Ermitteln des Arbeitsverzeichnisses",
-		MsgErrReadDir:       "Fehler beim Lesen des Verzeichnisses",
-		MsgErrCopyFile:      "Fehler beim Kopieren",
-		MsgCopyFile:         "%d Elemente nach %s kopiert",
-		MsgErrMoveFile:      "Fehler beim Verschieben",
-		MsgMoveFile:         "%d Elemente nach %s verschoben",
-		MsgTitleInputRename: "Element umbenennen",
-		MsgErrRenameFile:    "Umbenennen von %s nach %s fehlgeschlagen",
-		MsgRenameFile:       "%s in %s umbenannt",
+		MsgCurrentWd:          "Aktuelles Arbeitsverzeichnis: %s",
+		MsgErrGetWd:           "Fehler beim Ermitteln des Arbeitsverzeichnisses",
+		MsgErrReadDir:         "Fehler beim Lesen des Verzeichnisses",
+		MsgErrCopyFile:        "Fehler beim Kopieren",
+		MsgCopyFile:           "%d Elemente nach %s kopiert",
+		MsgErrMoveFile:        "Fehler beim Verschieben",
+		MsgMoveFile:           "%d Elemente nach %s verschoben",
+		MsgTitleInputRename:   "Element umbenennen",
+		MsgErrRenameFile:      "Umbenennen von %s nach %s fehlgeschlagen",
+		MsgRenameFile:         "%s in %s umbenannt",
+		MsgErrDeleteFile:      "Fehler beim Löschen",
+		MsgDeleteFile:         "%d Elemente gelöscht",
+		MsgConfirmDeleteOne:   "\"%s\" wirklich löschen?",
+		MsgConfirmDeleteMulti: "%d ausgewählte Elemente wirklich löschen?",
+		MsgBtnCancel:          "Abbrechen",
+		MsgBtnDelete:          "Löschen",
 	},
 }
 

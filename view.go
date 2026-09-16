@@ -214,3 +214,43 @@ func (a *App) renameSelected(idx int, newName string) {
 	a.setFooter(a.i18n.T(MsgRenameFile, item.Name, newName), tcell.ColorGreen)
 	a.refreshPanes()
 }
+
+// deleteSelected prompts the user for confirmation and deletes selected (or highlighted) files.
+func (a *App) deleteSelected() {
+	activeList := a.getActiveList()
+	items := a.selection.GetSelectedItems(activeList)
+	if len(items) == 0 {
+		idx := activeList.GetCurrentItem()
+		paneItems := a.getItemsFor(activeList)
+		if idx < 0 || idx >= len(paneItems) {
+			return
+		}
+		items = []FileInfo{paneItems[idx]}
+	}
+
+	if len(items) == 0 {
+		return
+	}
+
+	var message string
+	if len(items) == 1 {
+		message = a.i18n.T(MsgConfirmDeleteOne, items[0].Name)
+	} else {
+		message = a.i18n.T(MsgConfirmDeleteMulti, len(items))
+	}
+
+	btnCancel := a.i18n.T(MsgBtnCancel)
+	btnDelete := a.i18n.T(MsgBtnDelete)
+
+	// Buttons: [Cancel, Delete]. Index 0 (Cancel) is focused by default for safety.
+	a.ShowConfirmDialog(message, []string{btnCancel, btnDelete}, 0, func(btnIndex int) {
+		if btnIndex == 1 {
+			if err := deleteFiles(items); err != nil {
+				a.setFooter(a.i18n.T(MsgErrDeleteFile)+": "+err.Error(), tcell.ColorRed)
+				return
+			}
+			a.setFooter(a.i18n.T(MsgDeleteFile, len(items)), tcell.ColorGreen)
+			a.refreshPanes()
+		}
+	})
+}

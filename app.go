@@ -7,14 +7,12 @@ import (
 
 // App holds the application's UI components and shared state.
 type App struct {
-	tApp        *tview.Application
-	tPages      *tview.Pages
-	tHeader     *tview.TextView
-	tFooter     *tview.TextView
-	tLeft       *tview.List
-	tRight      *tview.List
-	tInputModal *tview.Flex
-	tInputField *tview.InputField
+	tApp    *tview.Application
+	tPages  *tview.Pages
+	tHeader *tview.TextView
+	tFooter *tview.TextView
+	tLeft   *tview.List
+	tRight  *tview.List
 
 	i18n *I18n
 
@@ -75,28 +73,8 @@ func (a *App) run() error {
 		AddItem(a.tRight, 1, 1, 1, 1, 0, 0, false).
 		AddItem(a.tFooter, 2, 0, 1, 2, 0, 0, false)
 
-	a.tInputField = tview.NewInputField().
-		SetFieldWidth(40).
-		SetAcceptanceFunc(nil)
-
-	// Rahmen & Container für das Eingabefeld
-	a.tInputModal = tview.NewFlex().
-		SetDirection(tview.FlexRow).
-		AddItem(a.tInputField, 0, 1, true)
-
-	a.tInputModal.
-		SetBorder(true).
-		SetTitleAlign(tview.AlignLeft)
-
-	// Zentrierung über ein 3x3 Grid
-	inputGrid := tview.NewGrid().
-		SetColumns(0, 50, 0).
-		SetRows(0, 3, 0).
-		AddItem(a.tInputModal, 1, 1, 1, 1, 0, 0, true)
-
 	a.tPages = tview.NewPages().
-		AddPage("main", grid, true, true).
-		AddPage("inputModal", inputGrid, true, false)
+		AddPage("main", grid, true, true)
 
 	return a.tApp.SetRoot(a.tPages, true).SetFocus(a.tLeft).Run()
 }
@@ -146,34 +124,101 @@ func (a *App) setWdFor(list *tview.List, wd string) {
 	}
 }
 
-// ShowInputDialog blendet das Modal ein, setzt den Titel und führt bei Enter `onSubmit` aus.
-func (a *App) ShowInputDialog(title string, initialValue string, onSubmit func(text string)) {
-	// 1. Titel & Werte setzen
-	a.tInputModal.SetTitle(title).SetTitleAlign(tview.AlignCenter)
-	a.tInputField.SetText(initialValue).SetFieldBackgroundColor(tcell.ColorBlack)
-	activePane:= a.getActiveList()
+// showModal adds a primitive as a modal page over the current view and sets focus.
+func (a *App) showModal(name string, item tview.Primitive, focus tview.Primitive) {
+	a.tPages.RemovePage(name)
+	a.tPages.AddPage(name, item, true, true)
+	if focus == nil {
+		focus = item
+	}
+	a.tApp.SetFocus(focus)
+}
 
-	// 2. Key-Events steuern
-	a.tInputField.SetDoneFunc(func(key tcell.Key) {
+// hideModal removes a modal page and returns focus to the active pane.
+func (a *App) hideModal(name string) {
+	a.tPages.RemovePage(name)
+	a.tApp.SetFocus(a.getActiveList())
+}
+
+// ShowInputDialog displays an input modal, prompts for text, and calls onSubmit upon Enter.
+func (a *App) ShowInputDialog(title string, initialValue string, onSubmit func(text string)) {
+	inputField := tview.NewInputField().
+		SetFieldWidth(40).
+		SetText(initialValue).
+		SetFieldBackgroundColor(tcell.ColorBlack)
+
+	inputField.SetDoneFunc(func(key tcell.Key) {
 		switch key {
 		case tcell.KeyEnter:
-			text := a.tInputField.GetText()
-			a.hideInputDialog(activePane)
+			text := inputField.GetText()
+			a.hideModal("inputModal")
 			if onSubmit != nil {
 				onSubmit(text)
 			}
 		case tcell.KeyEscape:
-			a.hideInputDialog(activePane)
+			a.hideModal("inputModal")
 		}
 	})
 
-	// 3. Modal einblenden und Fokus übergeben
-	a.tPages.ShowPage("inputModal")
-	a.tApp.SetFocus(a.tInputField)
+	inputModal := tview.NewFlex().
+		SetDirection(tview.FlexRow).
+		AddItem(inputField, 0, 1, true)
+	inputModal.
+		SetBorder(true).
+		SetTitle(title).
+		SetTitleAlign(tview.AlignCenter).
+		SetBackgroundColor(tcell.ColorBlack)
+	inputModal.Box.SetBackgroundColor(tcell.ColorBlack)
+	inputModal.Box.SetBorderColor(tcell.ColorWhite)
+
+	inputGrid := tview.NewGrid().
+		SetColumns(0, 50, 0).
+		SetRows(0, 3, 0).
+		AddItem(inputModal, 1, 1, 1, 1, 0, 0, true)
+
+	a.showModal("inputModal", inputGrid, inputField)
 }
 
-func (a *App) hideInputDialog(activePane *tview.List) {
-	a.tPages.HidePage("inputModal")
-	// Fokus zurück auf das aktive Panel setzen
-	a.tApp.SetFocus(activePane)
+// ShowConfirmDialog displays a modal confirmation dialog with the given message and buttons.
+// defaultFocus sets which button is focused initially (e.g. 0 for Cancel).
+// onDone is called with the chosen button index.
+func (a *App) ShowConfirmDialog(message string, buttons []string, defaultFocus int, onDone func(buttonIndex int)) {
+	modal := tview.NewModal().
+		SetText(message).
+		AddButtons(buttons).
+		SetFocus(defaultFocus).
+		SetTextColor(tcell.ColorWhite).
+		SetBackgroundColor(tcell.ColorBlack).
+		SetButtonBackgroundColor(tcell.ColorBlack).
+		SetButtonTextColor(tcell.ColorWhite).
+		SetButtonStyle(tcell.StyleDefault.Background(tcell.ColorBlack).Foreground(tcell.ColorWhite)).
+		SetButtonActivatedStyle(tcell.StyleDefault.Background(tcell.ColorWhite).Foreground(tcell.ColorBlack))
+
+	modal.Box.SetBackgroundColor(tcell.ColorBlack)
+	modal.Box.SetBorderColor(tcell.ColorWhite)
+	modal.Box.SetBorderStyle(tcell.StyleDefault.Foreground(tcell.ColorWhite).Background(tcell.ColorBlack))
+
+	modal.SetDoneFunc(func(buttonIndex int, buttonLabel string) {
+		a.hideModal("confirmModal")
+		if onDone != nil {
+			onDone(buttonIndex)
+		}
+	})
+
+	modal.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+		switch {
+		case event.Key() == tcell.KeyEscape || event.Rune() == 'n' || event.Rune() == 'N':
+			a.hideModal("confirmModal")
+			return nil
+		case event.Rune() == 'y' || event.Rune() == 'Y' || event.Rune() == 'j' || event.Rune() == 'J':
+			a.hideModal("confirmModal")
+			if onDone != nil {
+				onDone(1)
+			}
+			return nil
+		}
+		return event
+	})
+
+	a.showModal("confirmModal", modal, modal)
 }

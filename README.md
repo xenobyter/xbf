@@ -35,6 +35,7 @@ The application provides two independent directory views, allowing users to navi
 | `c` | Copy selected Items |
 | `m` | Move selected Items |
 | `r` | Rename selected Item |
+| `d`/`Del` | Delete selected (or current) Items (with confirmation) |
 | `q`/`Esc` | Quit application |
 
 ## User Interface
@@ -168,7 +169,6 @@ Error messages are localized according to the selected language.
 
 Potential future features include:
 
-- Delete operations
 - Status bar information
 - File size display
 - Batch rename files
