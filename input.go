@@ -73,8 +73,8 @@ var dirListKeyActions = map[string]actionFunc{
 					a.setFooter(a.i18n.T(MsgErrRenameFile, item.Name, newName), tcell.ColorRed)
 					return
 				}
-				a.setFooter(a.i18n.T(MsgRenameFile, item.Name, newName), tcell.ColorGreen)
 				a.refreshPanes()
+				a.setFooter(a.i18n.T(MsgRenameFile, item.Name, newName), tcell.ColorGreen)
 			})
 
 	},

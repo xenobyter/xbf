@@ -197,8 +197,8 @@ func (a *App) copySelected() {
 		a.setFooter(a.i18n.T(MsgErrCopyFile)+": "+err.Error(), tcell.ColorRed)
 		return
 	}
-	a.setFooter(a.i18n.T(MsgCopyFile, len(items), target), tcell.ColorGreen)
 	a.refreshPanes()
+	a.setFooter(a.i18n.T(MsgCopyFile, len(items), target), tcell.ColorGreen)
 }
 
 // moveSelected moves all selected files from the active pane to the target pane.
@@ -217,8 +217,8 @@ func (a *App) moveSelected() {
 		a.setFooter(a.i18n.T(MsgErrMoveFile)+": "+err.Error(), tcell.ColorRed)
 		return
 	}
-	a.setFooter(a.i18n.T(MsgMoveFile, len(items), target), tcell.ColorGreen)
 	a.refreshPanes()
+	a.setFooter(a.i18n.T(MsgMoveFile, len(items), target), tcell.ColorGreen)
 }
 
 // renameSelected renames the currently selected item in the active pane.
@@ -248,8 +248,8 @@ func (a *App) renameSelected(idx int, newName string) {
 		return
 	}
 
-	a.setFooter(a.i18n.T(MsgRenameFile, item.Name, newName), tcell.ColorGreen)
 	a.refreshPanes()
+	a.setFooter(a.i18n.T(MsgRenameFile, item.Name, newName), tcell.ColorGreen)
 }
 
 // deleteSelected prompts the user for confirmation and deletes selected (or highlighted) files.
@@ -286,8 +286,8 @@ func (a *App) deleteSelected() {
 				a.setFooter(a.i18n.T(MsgErrDeleteFile)+": "+err.Error(), tcell.ColorRed)
 				return
 			}
-			a.setFooter(a.i18n.T(MsgDeleteFile, len(items)), tcell.ColorGreen)
 			a.refreshPanes()
+			a.setFooter(a.i18n.T(MsgDeleteFile, len(items)), tcell.ColorGreen)
 		}
 	})
 }

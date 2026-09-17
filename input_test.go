@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/gdamore/tcell/v2"
+	"github.com/rivo/tview"
 )
 
 func TestNormalizeAction(t *testing.T) {
@@ -94,3 +95,19 @@ func TestNormalizeAction(t *testing.T) {
 	}
 }
 
+func TestModalReturnsFocusToOriginalPane(t *testing.T) {
+	a := &App{
+		tApp:   tview.NewApplication(),
+		tPages: tview.NewPages(),
+		tLeft:  tview.NewList(),
+		tRight: tview.NewList(),
+	}
+	a.tApp.SetFocus(a.tRight)
+
+	a.showModal("testModal", tview.NewTextView(), nil)
+	a.hideModal("testModal")
+
+	if a.tApp.GetFocus() != a.tRight {
+		t.Fatalf("expected focus to return to right pane, got %T", a.tApp.GetFocus())
+	}
+}

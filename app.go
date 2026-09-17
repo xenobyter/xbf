@@ -7,12 +7,13 @@ import (
 
 // App holds the application's UI components and shared state.
 type App struct {
-	tApp    *tview.Application
-	tPages  *tview.Pages
-	tHeader *tview.TextView
-	tFooter *tview.TextView
-	tLeft   *tview.List
-	tRight  *tview.List
+	tApp             *tview.Application
+	tPages           *tview.Pages
+	tHeader          *tview.TextView
+	tFooter          *tview.TextView
+	tLeft            *tview.List
+	tRight           *tview.List
+	modalReturnFocus tview.Primitive
 
 	i18n *I18n
 
@@ -133,6 +134,7 @@ func (a *App) setWdFor(list *tview.List, wd string) {
 
 // showModal adds a primitive as a modal page over the current view and sets focus.
 func (a *App) showModal(name string, item tview.Primitive, focus tview.Primitive) {
+	a.modalReturnFocus = a.getActiveList()
 	a.tPages.RemovePage(name)
 	a.tPages.AddPage(name, item, true, true)
 	if focus == nil {
@@ -143,8 +145,13 @@ func (a *App) showModal(name string, item tview.Primitive, focus tview.Primitive
 
 // hideModal removes a modal page and returns focus to the active pane.
 func (a *App) hideModal(name string) {
+	returnFocus := a.modalReturnFocus
+	a.modalReturnFocus = nil
 	a.tPages.RemovePage(name)
-	a.tApp.SetFocus(a.getActiveList())
+	if returnFocus == nil {
+		returnFocus = a.getActiveList()
+	}
+	a.tApp.SetFocus(returnFocus)
 }
 
 // ShowInputDialog displays an input modal, prompts for text, and calls onSubmit upon Enter.
