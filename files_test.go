@@ -32,3 +32,21 @@ func TestSortFiles(t *testing.T) {
 		}
 	}
 }
+
+func TestFormatFileSize(t *testing.T) {
+	tests := []struct {
+		size int64
+		want string
+	}{
+		{size: 0, want: "0 B"},
+		{size: 1023, want: "1023 B"},
+		{size: 1024, want: "1.0 KB"},
+		{size: 1024 * 1024, want: "1.0 MB"},
+	}
+
+	for _, test := range tests {
+		if got := formatFileSize(test.size); got != test.want {
+			t.Errorf("formatFileSize(%d) = %q, want %q", test.size, got, test.want)
+		}
+	}
+}

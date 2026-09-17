@@ -19,6 +19,8 @@ type MsgKey int
 
 const (
 	MsgCurrentWd MsgKey = iota
+	MsgFileInfo
+	MsgDirectoryInfo
 	MsgErrGetWd
 	MsgErrReadDir
 	MsgErrCopyFile
@@ -46,6 +48,8 @@ const (
 var translations = map[Lang]map[MsgKey]string{
 	LangEN: {
 		MsgCurrentWd:          "Current Working Directory: %s",
+		MsgFileInfo:           "%s | %s",
+		MsgDirectoryInfo:      "%s | Directory",
 		MsgErrGetWd:           "Error retrieving working directory",
 		MsgErrReadDir:         "Error reading directory",
 		MsgErrCopyFile:        "Error copying",
@@ -64,6 +68,8 @@ var translations = map[Lang]map[MsgKey]string{
 	},
 	LangDE: {
 		MsgCurrentWd:          "Aktuelles Arbeitsverzeichnis: %s",
+		MsgFileInfo:           "%s | %s",
+		MsgDirectoryInfo:      "%s | Verzeichnis",
 		MsgErrGetWd:           "Fehler beim Ermitteln des Arbeitsverzeichnisses",
 		MsgErrReadDir:         "Fehler beim Lesen des Verzeichnisses",
 		MsgErrCopyFile:        "Fehler beim Kopieren",

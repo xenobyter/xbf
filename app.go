@@ -50,6 +50,13 @@ func newApp() *App {
 	a.setHeader(a.leftWd)
 	a.updateList(a.tLeft, "")
 	a.updateList(a.tRight, "")
+	a.tLeft.SetChangedFunc(func(index int, _ string, _ string, _ rune) {
+		a.setItemInfo(a.tLeft, index)
+	})
+	a.tRight.SetChangedFunc(func(index int, _ string, _ string, _ rune) {
+		a.setItemInfo(a.tRight, index)
+	})
+	a.setItemInfo(a.tLeft, a.tLeft.GetCurrentItem())
 
 	// Register inputhandlers
 	a.tLeft.SetInputCapture(a.handleInput)

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"path/filepath"
 	"strings"
 
@@ -87,6 +88,7 @@ func (a *App) switchPane() {
 	target := a.getInactiveList()
 	a.tApp.SetFocus(target)
 	a.setHeader(a.getWdFor(target))
+	a.setItemInfo(target, target.GetCurrentItem())
 }
 
 // changeDir updates the working directory for the list, refreshes the view,
@@ -95,6 +97,7 @@ func (a *App) changeDir(list *tview.List, wd string) {
 	a.setWdFor(list, wd)
 	a.updateList(list, wd)
 	a.setHeader(wd)
+	a.setItemInfo(list, list.GetCurrentItem())
 }
 
 // enterDirectory navigates into the selected directory entry.
@@ -126,6 +129,40 @@ func (a *App) leaveDirectory(list *tview.List) {
 // setFooter sets the status message and color in the footer bar.
 func (a *App) setFooter(msg string, color tcell.Color) {
 	a.tFooter.SetText(msg).SetTextColor(color)
+}
+
+// setItemInfo displays metadata for the item currently under the cursor.
+func (a *App) setItemInfo(list *tview.List, idx int) {
+	items := a.getItemsFor(list)
+	if idx < 0 || idx >= len(items) {
+		a.setFooter("", tcell.ColorWhite)
+		return
+	}
+
+	item := items[idx]
+	if item.IsDir {
+		a.setFooter(a.i18n.T(MsgDirectoryInfo, item.Name), tcell.ColorWhite)
+		return
+	}
+
+	a.setFooter(a.i18n.T(MsgFileInfo, item.Name, formatFileSize(item.Size)), tcell.ColorWhite)
+}
+
+func formatFileSize(size int64) string {
+	if size < 1024 {
+		return fmt.Sprintf("%d B", size)
+	}
+
+	units := []string{"KB", "MB", "GB", "TB"}
+	value := float64(size)
+	for _, unit := range units {
+		value /= 1024
+		if value < 1024 || unit == units[len(units)-1] {
+			return fmt.Sprintf("%.1f %s", value, unit)
+		}
+	}
+
+	return fmt.Sprintf("%d B", size)
 }
 
 // refreshPanes clears the active pane's selection and reloads both pane lists.
