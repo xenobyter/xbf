@@ -13,7 +13,11 @@ type App struct {
 	tFooter          *tview.TextView
 	tLeft            *tview.List
 	tRight           *tview.List
+	tPreviewHeader   *tview.TextView
+	tPreviewBody     *tview.TextView
+	tPreviewPage     tview.Primitive
 	modalReturnFocus tview.Primitive
+	previewReturn    tview.Primitive
 
 	i18n *I18n
 
@@ -32,10 +36,25 @@ func newApp() *App {
 		tApp:    tview.NewApplication(),
 		tHeader: tview.NewTextView(),
 		tFooter: tview.NewTextView(),
-		tLeft:   tview.NewList().ShowSecondaryText(false).SetSelectedFocusOnly(true),
-		tRight:  tview.NewList().ShowSecondaryText(false).SetSelectedFocusOnly(true),
-		i18n:    newI18n(),
+		tLeft: tview.NewList().
+			ShowSecondaryText(false).
+			SetSelectedFocusOnly(true),
+		tRight: tview.NewList().
+			ShowSecondaryText(false).
+			SetSelectedFocusOnly(true),
+		tPreviewHeader: tview.NewTextView().
+			SetDynamicColors(true),
+		tPreviewBody: tview.NewTextView().
+			SetDynamicColors(true).
+			SetScrollable(true).SetWrap(false),
+		i18n: newI18n(),
 	}
+	a.tPreviewBody.SetBorder(true)
+	a.tPreviewBody.SetInputCapture(a.handlePreviewInput)
+	a.tPreviewPage = tview.NewFlex().
+		SetDirection(tview.FlexRow).
+		AddItem(a.tPreviewHeader, 1, 0, false).
+		AddItem(a.tPreviewBody, 0, 1, true)
 
 	// Attempt to get the current working directory. If it fails, set an error message
 	// in both leftWd and rightWd to inform the user.

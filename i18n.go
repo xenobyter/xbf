@@ -43,6 +43,12 @@ const (
 	MsgConfirmDeleteMulti
 	MsgBtnCancel
 	MsgBtnDelete
+	MsgErrPreviewOpen
+	MsgErrPreviewDirectory
+	MsgPreviewHeader
+	MsgPreviewModeText
+	MsgPreviewModeHex
+	MsgPreviewTruncated
 )
 
 var translations = map[Lang]map[MsgKey]string{
@@ -65,6 +71,12 @@ var translations = map[Lang]map[MsgKey]string{
 		MsgConfirmDeleteMulti: "Delete %d selected items?",
 		MsgBtnCancel:          "Cancel",
 		MsgBtnDelete:          "Delete",
+		MsgErrPreviewOpen:     "Error opening preview",
+		MsgErrPreviewDirectory:"Cannot preview directories",
+		MsgPreviewHeader:      "Preview: %s | %s | %s%s",
+		MsgPreviewModeText:    "TEXT",
+		MsgPreviewModeHex:     "HEX",
+		MsgPreviewTruncated:   " | truncated to %s",
 	},
 	LangDE: {
 		MsgCurrentWd:          "Aktuelles Arbeitsverzeichnis: %s",
@@ -85,6 +97,12 @@ var translations = map[Lang]map[MsgKey]string{
 		MsgConfirmDeleteMulti: "%d ausgewählte Elemente wirklich löschen?",
 		MsgBtnCancel:          "Abbrechen",
 		MsgBtnDelete:          "Löschen",
+		MsgErrPreviewOpen:     "Fehler beim Öffnen der Vorschau",
+		MsgErrPreviewDirectory:"Verzeichnisse können nicht in der Vorschau angezeigt werden",
+		MsgPreviewHeader:      "Vorschau: %s | %s | %s%s",
+		MsgPreviewModeText:    "TEXT",
+		MsgPreviewModeHex:     "HEX",
+		MsgPreviewTruncated:   " | gekürzt auf %s",
 	},
 }
 

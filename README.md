@@ -11,6 +11,10 @@ Keyboard-driven dual-pane file manager for the terminal (Go + tview/tcell).
   - directories first
   - then alphabetical (case-insensitive, original casing as tie-breaker)
 - File info in the footer (name + formatted size)
+- Fullscreen file preview page
+  - readable text files as text
+  - binary files as hex dump
+  - syntax highlighting for text previews (lexer-based)
 - Multi-selection per pane
 - File operations:
   - copy
@@ -51,7 +55,16 @@ go run .
 | `m` | Move selection (or current item) to inactive pane |
 | `r` | Rename current item (input dialog) |
 | `d` / `Del` | Delete selection (or current item), with confirmation |
+| `p` | Open fullscreen preview for current file |
 | `q` / `Esc` | Quit application |
+
+Preview page:
+
+- `Esc` = close preview
+- `↓` = scroll down
+- `↑` = scroll up
+- `PgDn` / `PgUp` = page scroll
+- `Home` / `End` = start/end
 
 Delete confirmation dialog:
 
