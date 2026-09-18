@@ -317,7 +317,7 @@ func (a *App) openTextEditor() {
 	textArea := tview.NewTextArea()
 	textArea.SetBorder(true)
 	textArea.SetInputCapture(a.handleEditorInput)
-	textArea.SetText(doc.Text(), true)
+	textArea.SetText(doc.Text(), false)
 	textArea.SetChangedFunc(func() {
 		if a.document != nil {
 			a.document.SetText(textArea.GetText())
