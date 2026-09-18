@@ -308,24 +308,37 @@ func (a *App) openTextEditor() {
 		return
 	}
 	if doc.Mode == previewModeHex {
-		a.setFooter("Binary files are not editable in the editor yet.", tcell.ColorYellow)
+		a.openHexEditor(doc)
 		return
 	}
 
 	a.document = doc
 	a.tEditorHeader.SetText("Edit: " + path)
-	a.tEditorBody.SetText(doc.Text(), true)
-	a.tEditorBody.SetChangedFunc(func() {
+	textArea := tview.NewTextArea()
+	textArea.SetBorder(true)
+	textArea.SetInputCapture(a.handleEditorInput)
+	textArea.SetText(doc.Text(), true)
+	textArea.SetChangedFunc(func() {
 		if a.document != nil {
-			a.document.SetText(a.tEditorBody.GetText())
+			a.document.SetText(textArea.GetText())
+			a.handleDocumentDirty()
 		}
 	})
-	a.tEditorBody.SetOffset(0, 0)
 	a.editorReturn = activeList
-	a.tPages.RemovePage("editor")
-	a.tPages.AddPage("editor", a.tEditorPage, true, true)
+	a.rebuildEditorPage(textArea)
 	a.tPages.SwitchToPage("editor")
-	a.tApp.SetFocus(a.tEditorBody)
+	a.tApp.SetFocus(textArea)
+}
+
+func (a *App) openHexEditor(doc *Document) {
+	a.document = doc
+	a.tEditorHeader.SetText("Hex Edit: " + doc.Path)
+	hexEditor := newHexEditor(doc, a.saveEditor, a.closeEditor, a.handleDocumentDirty)
+	hexEditor.SetBorder(true)
+	a.editorReturn = a.getActiveList()
+	a.rebuildEditorPage(hexEditor)
+	a.tPages.SwitchToPage("editor")
+	a.tApp.SetFocus(hexEditor)
 }
 
 func (a *App) closeEditor() {
@@ -354,7 +367,7 @@ func (a *App) saveEditor() {
 		return
 	}
 	a.document.Dirty = false
-	a.setFooter("Saved: "+a.document.Path, tcell.ColorGreen)
+	a.handleDocumentSaved()
 }
 
 func (a *App) handleEditorInput(event *tcell.EventKey) *tcell.EventKey {
@@ -376,5 +389,40 @@ func (a *App) handleEditorInput(event *tcell.EventKey) *tcell.EventKey {
 }
 
 func (a *App) openEditor() {
+	activeList := a.getActiveList()
+	idx := activeList.GetCurrentItem()
+	items := a.getItemsFor(activeList)
+	if idx < 0 || idx >= len(items) {
+		return
+	}
+
+	item := items[idx]
+	if item.IsDir {
+		a.setFooter(a.i18n.T(MsgErrEditDirectory), tcell.ColorYellow)
+		return
+	}
+
+	path := filepath.Join(item.Path, item.Name)
+	doc, err := newDocument(path)
+	if err != nil {
+		a.setFooter(a.i18n.T(MsgErrPreviewOpen)+": "+err.Error(), tcell.ColorRed)
+		return
+	}
+	if doc.Mode == previewModeHex {
+		a.openHexEditor(doc)
+		return
+	}
 	a.openTextEditor()
+}
+
+func (a *App) handleDocumentDirty() {
+	if a.document != nil && a.document.Dirty {
+		a.setFooter("Unsaved changes", tcell.ColorYellow)
+	}
+}
+
+func (a *App) handleDocumentSaved() {
+	if a.document != nil && !a.document.Dirty {
+		a.setFooter("Saved: "+a.document.Path, tcell.ColorGreen)
+	}
 }

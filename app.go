@@ -17,7 +17,7 @@ type App struct {
 	tPreviewBody     *tview.TextView
 	tPreviewPage     tview.Primitive
 	tEditorHeader    *tview.TextView
-	tEditorBody      *tview.TextArea
+	tEditorBody      tview.Primitive
 	tEditorPage      tview.Primitive
 	modalReturnFocus tview.Primitive
 	previewReturn    tview.Primitive
@@ -54,7 +54,6 @@ func newApp() *App {
 			SetScrollable(true).SetWrap(false),
 		tEditorHeader: tview.NewTextView().
 			SetDynamicColors(true),
-		tEditorBody: tview.NewTextArea(),
 		i18n: newI18n(),
 	}
 	a.tPreviewBody.SetBorder(true)
@@ -62,14 +61,18 @@ func newApp() *App {
 	a.tPreviewPage = tview.NewFlex().
 		SetDirection(tview.FlexRow).
 		AddItem(a.tPreviewHeader, 1, 0, false).
-		AddItem(a.tPreviewBody, 0, 1, true)
+		AddItem(a.tPreviewBody, 0, 1, true).
+		AddItem(a.tFooter, 1, 0, false)
 
-	a.tEditorBody.SetBorder(true)
-	a.tEditorBody.SetInputCapture(a.handleEditorInput)
+	textArea := tview.NewTextArea()
+	textArea.SetBorder(true)
+	textArea.SetInputCapture(a.handleEditorInput)
+	a.tEditorBody = textArea
 	a.tEditorPage = tview.NewFlex().
 		SetDirection(tview.FlexRow).
 		AddItem(a.tEditorHeader, 1, 0, false).
-		AddItem(a.tEditorBody, 0, 1, true)
+		AddItem(a.tEditorBody, 0, 1, true).
+		AddItem(a.tFooter, 1, 0, false)
 
 	// Attempt to get the current working directory. If it fails, set an error message
 	// in both leftWd and rightWd to inform the user.
@@ -269,4 +272,17 @@ func (a *App) ShowConfirmDialog(message string, buttons []string, defaultFocus i
 	})
 
 	a.showModal("confirmModal", modal, modal)
+}
+
+func (a *App) rebuildEditorPage(body tview.Primitive) {
+	a.tEditorBody = body
+	a.tEditorPage = tview.NewFlex().
+		SetDirection(tview.FlexRow).
+		AddItem(a.tEditorHeader, 1, 0, false).
+		AddItem(body, 0, 1, true).
+		AddItem(a.tFooter, 1, 0, false)
+	if a.tPages != nil {
+		a.tPages.RemovePage("editor")
+		a.tPages.AddPage("editor", a.tEditorPage, true, true)
+	}
 }

@@ -60,7 +60,7 @@ go run .
 | `r` | Rename current item (input dialog) |
 | `d` / `Del` | Delete selection (or current item), with confirmation |
 | `p` | Open fullscreen preview for current file |
-| `e` | Open current text file in editor session |
+| `e` | Open current file in editor session |
 | `q` / `Esc` | Quit application |
 
 Preview page:
