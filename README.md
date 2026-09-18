@@ -1,181 +1,101 @@
-# xbf - Dual Pane Terminal File Manager
+# xbf
 
-A lightweight dual-pane file manager for the terminal, written in Go and powered by the **tview** and **tcell** libraries.
+Keyboard-driven dual-pane file manager for the terminal (Go + tview/tcell).
 
-The application provides two independent directory views, allowing users to navigate the filesystem efficiently using only the keyboard. It also includes basic internationalization (English and German) and a clean terminal-based user interface.
+`xbf` provides two independent directory views (left/right) and supports common file operations directly from the keyboard.
 
 ## Features
 
-- Dual-pane file browser
-- Independent navigation in each pane
-- Keyboard-driven interface
-- File and directory icons
-- Automatic file sorting:
-  - Directories first
-  - Alphabetical order (case-insensitive)
-- Automatic language detection via environment variables
-- English and German translations
-- Unit tests for:
-  - File sorting
-  - Internationalization
+- Dual-pane navigation
+- Per-directory sorting:
+  - directories first
+  - then alphabetical (case-insensitive, original casing as tie-breaker)
+- File info in the footer (name + formatted size)
+- Multi-selection per pane
+- File operations:
+  - copy
+  - move
+  - rename
+  - delete (with confirmation dialog)
+- Recursive directory handling
+- Symlink support for copy/move/rename/delete
+- i18n (German/English), automatic language detection via `LC_ALL`/`LANG` with English fallback
+- Comprehensive unit tests for filesystem operations, input mapping, selection logic, and i18n
 
-## Dependencies
+## Requirements
 
-- [tview](https://github.com/rivo/tview) – Terminal UI framework
-- [tcell](https://github.com/gdamore/tcell) – Terminal event handling
+- Go (version defined in `go.mod`)
+
+## Build & Start
+
+```bash
+go build -o xbf .
+./xbf
+```
+
+Or run directly:
+
+```bash
+go run .
+```
 
 ## Keyboard Shortcuts
 
 | Key | Action |
-| ------- | -------- |
-| `Tab` | Switch between left and right pane |
+| --- | --- |
+| `Tab` | Switch active pane |
 | `→` | Enter selected directory |
-| `←` | Navigate to parent directory |
-| `s`/`Space` | Select/deselect item |
-| `c` | Copy selected Items |
-| `m` | Move selected Items |
-| `r` | Rename selected Item |
-| `d`/`Del` | Delete selected (or current) Items (with confirmation) |
-| `q`/`Esc` | Quit application |
+| `←` | Go to parent directory |
+| `s` / `Space` | Select/deselect item |
+| `c` | Copy selection (or current item) to inactive pane |
+| `m` | Move selection (or current item) to inactive pane |
+| `r` | Rename current item (input dialog) |
+| `d` / `Del` | Delete selection (or current item), with confirmation |
+| `q` / `Esc` | Quit application |
 
-## User Interface
+Delete confirmation dialog:
 
-The interface consists of four sections:
+- `y` / `j` = confirm
+- `n` / `Esc` = cancel
 
-### Header
+## UI Layout
 
-Displays the current working directory of the active pane.
+- **Header**: current working directory of the active pane
+- **Left pane**: left directory contents
+- **Right pane**: right directory contents
+- **Footer**: file info, success messages, error messages
 
-### Left Pane
+Icons:
 
-Shows the contents of the left working directory.
-
-### Right Pane
-
-Shows the contents of the right working directory.
-
-### Footer
-
-Reserved for status messages and future enhancements.
-
-## File and Directory Icons
-
-The application uses Unicode icons to distinguish between files and directories.
-
-| Icon | Description |
-| ------- | ------------- |
-| 📁 | Directory |
-| 📄 | File |
-
-## Sorting Behavior
-
-Entries are sorted according to the following rules:
-
-1. Directories before files
-2. Alphabetical order ignoring case
-3. Original letter casing used as a tie-breaker
-
-Example:
-
-```text
-📁 alpha_dir
-📁 Beta_dir
-📄 a.txt
-📄 apple.txt
-📄 B.txt
-📄 zebra.txt
-```
+- 📁 Directory
+- 📄 File
 
 ## Internationalization
 
-The application automatically detects the system language using the `LC_ALL` and `LANG` environment variables.
+Supported languages:
 
-Currently supported languages:
-
-- English (`en`)
 - German (`de`)
+- English (`en`)
 
 Examples:
 
 ```bash
-LANG=en_US.UTF-8 ./filemanager
+LANG=de_DE.UTF-8 ./xbf
+LANG=en_US.UTF-8 ./xbf
 ```
 
-```bash
-LANG=de_DE.UTF-8 ./filemanager
-```
-
-If no supported language is detected, the application falls back to English.
-
-## Architecture
-
-### App
-
-The `App` structure acts as the central application controller and manages:
-
-- tview application instance
-- Header and footer
-- Left and right directory panes
-- Current working directories
-- Directory contents
-- Language management
-
-### FileInfo
-
-Represents a file or directory entry:
-
-```go
-type FileInfo struct {
-    Name  string
-    Path  string
-    IsDir bool
-    Size  int64
-}
-```
-
-### I18n
-
-Handles language detection and translation lookup.
-
-### Event Handling
-
-Keyboard events are normalized into symbolic actions and dispatched through a central action map.
-
-## Running Tests
-
-Run all tests:
+## Tests
 
 ```bash
 go test ./...
 ```
 
-Run tests with verbose output:
+Optional verbose output:
 
 ```bash
 go test -v ./...
 ```
 
-## Error Handling
-
-The application gracefully handles common filesystem errors such as:
-
-- Unable to determine the current working directory
-- Unable to read directory contents
-- Invalid navigation attempts
-
-Error messages are localized according to the selected language.
-
-## Future Enhancements
-
-Potential future features include:
-
-- Status bar information
-- File size display
-- Batch rename files
-- Create directories
-- Configurable themes
-- File preview
-
 ## License
 
-This project is public domain under the The Unlicense. See the `LICENSE` file for details.
+This project is released under the Unlicense. See `LICENSE` for details.
