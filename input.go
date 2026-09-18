@@ -1,7 +1,9 @@
 package main
 
 import (
+	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/gdamore/tcell/v2"
 )
@@ -30,6 +32,10 @@ func normalizeAction(event *tcell.EventKey) string {
 		return "rename"
 	case event.Rune() == 'd', event.Key() == tcell.KeyDelete:
 		return "delete"
+	case event.Rune() == 'n':
+		return "newfile"
+	case event.Rune() == 'N':
+		return "newdir"
 	case event.Rune() == 'p':
 		return "preview"
 	case event.Rune() == 'e', event.Rune() == 'E':
@@ -84,6 +90,58 @@ var dirListKeyActions = map[string]actionFunc{
 	},
 	"delete": func(a *App, _ int) {
 		a.deleteSelected()
+	},
+	"newfile": func(a *App, _ int) {
+		activeList := a.getActiveList()
+		wd := a.getWdFor(activeList)
+		a.ShowInputDialog(a.i18n.T(MsgTitleInputNewFile), "new_file.txt", func(fileName string) {
+			fileName = strings.TrimSpace(fileName)
+			if fileName == "" {
+				a.setFooter(a.i18n.T(MsgErrEmptyFileName), tcell.ColorRed)
+				return
+			}
+			if filepath.Base(fileName) != fileName || fileName == "." || fileName == ".." {
+				a.setFooter(a.i18n.T(MsgErrInvalidName), tcell.ColorRed)
+				return
+			}
+			newFilePath := filepath.Join(wd, fileName)
+			if _, err := os.Stat(newFilePath); err == nil {
+				a.setFooter(a.i18n.T(MsgErrCreateFile, fileName), tcell.ColorRed)
+				return
+			}
+			if err := a.createEmptyFile(newFilePath); err != nil {
+				a.setFooter(a.i18n.T(MsgErrCreateFile, fileName)+": "+err.Error(), tcell.ColorRed)
+				return
+			}
+			a.refreshPanes()
+			a.setFooter(a.i18n.T(MsgCreateFile, fileName), tcell.ColorGreen)
+		})
+	},
+	"newdir": func(a *App, _ int) {
+		activeList := a.getActiveList()
+		wd := a.getWdFor(activeList)
+		a.ShowInputDialog(a.i18n.T(MsgTitleInputNewDir), "new_directory", func(dirName string) {
+			dirName = strings.TrimSpace(dirName)
+			if dirName == "" {
+				a.setFooter(a.i18n.T(MsgErrEmptyDirName), tcell.ColorRed)
+				return
+			}
+			if filepath.Base(dirName) != dirName || dirName == "." || dirName == ".." {
+				a.setFooter(a.i18n.T(MsgErrInvalidName), tcell.ColorRed)
+				return
+			}
+			newDirPath := filepath.Join(wd, dirName)
+			if _, err := os.Stat(newDirPath); err == nil {
+				a.setFooter(a.i18n.T(MsgErrCreateDir, dirName), tcell.ColorRed)
+				return
+			}
+			if err := a.createDirectory(newDirPath); err != nil {
+				a.setFooter(a.i18n.T(MsgErrCreateDir, dirName)+": "+err.Error(), tcell.ColorRed)
+				return
+			}
+			a.refreshPanes()
+			a.setFooter(a.i18n.T(MsgCreateDir, dirName), tcell.ColorGreen)
+		})
 	},
 	"preview": func(a *App, _ int) {
 		a.openPreview()

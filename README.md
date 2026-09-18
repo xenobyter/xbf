@@ -19,6 +19,10 @@ Keyboard-driven dual-pane file manager for the terminal (Go + tview/tcell).
   - open current file in an edit session
   - save with `Ctrl+S`
   - close with `Esc`
+- Simple Hex editor for binary files
+  - open current file in a hex edit session
+  - save with `Ctrl+S`
+  - close with `Esc`
 - Multi-selection per pane
 - File operations:
   - copy
@@ -59,6 +63,8 @@ go run .
 | `m` | Move selection (or current item) to inactive pane |
 | `r` | Rename current item (input dialog) |
 | `d` / `Del` | Delete selection (or current item), with confirmation |
+| `n` | Create a new empty file |
+| `N` | Create a new directory |
 | `p` | Open fullscreen preview for current file |
 | `e` | Open current file in editor session |
 | `q` / `Esc` | Quit application |

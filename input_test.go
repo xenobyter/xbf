@@ -69,6 +69,16 @@ func TestNormalizeAction(t *testing.T) {
 			expected: "delete",
 		},
 		{
+			name:     "n creates file",
+			event:    tcell.NewEventKey(tcell.KeyRune, 'n', tcell.ModNone),
+			expected: "newfile",
+		},
+		{
+			name:     "N creates directory",
+			event:    tcell.NewEventKey(tcell.KeyRune, 'N', tcell.ModNone),
+			expected: "newdir",
+		},
+		{
 			name:     "p previews",
 			event:    tcell.NewEventKey(tcell.KeyRune, 'p', tcell.ModNone),
 			expected: "preview",
