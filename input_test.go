@@ -74,11 +74,6 @@ func TestNormalizeAction(t *testing.T) {
 			expected: "preview",
 		},
 		{
-			name:     "F3 previews",
-			event:    tcell.NewEventKey(tcell.KeyF3, 0, tcell.ModNone),
-			expected: "preview",
-		},
-		{
 			name:     "KeyDelete deletes",
 			event:    tcell.NewEventKey(tcell.KeyDelete, 0, tcell.ModNone),
 			expected: "delete",

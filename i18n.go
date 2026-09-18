@@ -45,6 +45,7 @@ const (
 	MsgBtnDelete
 	MsgErrPreviewOpen
 	MsgErrPreviewDirectory
+	MsgErrEditDirectory
 	MsgPreviewHeader
 	MsgPreviewModeText
 	MsgPreviewModeHex
@@ -73,6 +74,7 @@ var translations = map[Lang]map[MsgKey]string{
 		MsgBtnDelete:          "Delete",
 		MsgErrPreviewOpen:     "Error opening preview",
 		MsgErrPreviewDirectory:"Cannot preview directories",
+		MsgErrEditDirectory:   "Cannot edit directories",
 		MsgPreviewHeader:      "Preview: %s | %s | %s%s",
 		MsgPreviewModeText:    "TEXT",
 		MsgPreviewModeHex:     "HEX",
@@ -99,6 +101,7 @@ var translations = map[Lang]map[MsgKey]string{
 		MsgBtnDelete:          "Löschen",
 		MsgErrPreviewOpen:     "Fehler beim Öffnen der Vorschau",
 		MsgErrPreviewDirectory:"Verzeichnisse können nicht in der Vorschau angezeigt werden",
+		MsgErrEditDirectory:   "Verzeichnisse können nicht bearbeitet werden",
 		MsgPreviewHeader:      "Vorschau: %s | %s | %s%s",
 		MsgPreviewModeText:    "TEXT",
 		MsgPreviewModeHex:     "HEX",

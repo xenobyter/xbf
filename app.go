@@ -16,8 +16,13 @@ type App struct {
 	tPreviewHeader   *tview.TextView
 	tPreviewBody     *tview.TextView
 	tPreviewPage     tview.Primitive
+	tEditorHeader    *tview.TextView
+	tEditorBody      *tview.TextArea
+	tEditorPage      tview.Primitive
 	modalReturnFocus tview.Primitive
 	previewReturn    tview.Primitive
+	editorReturn     tview.Primitive
+	document         *Document
 
 	i18n *I18n
 
@@ -47,6 +52,9 @@ func newApp() *App {
 		tPreviewBody: tview.NewTextView().
 			SetDynamicColors(true).
 			SetScrollable(true).SetWrap(false),
+		tEditorHeader: tview.NewTextView().
+			SetDynamicColors(true),
+		tEditorBody: tview.NewTextArea(),
 		i18n: newI18n(),
 	}
 	a.tPreviewBody.SetBorder(true)
@@ -55,6 +63,13 @@ func newApp() *App {
 		SetDirection(tview.FlexRow).
 		AddItem(a.tPreviewHeader, 1, 0, false).
 		AddItem(a.tPreviewBody, 0, 1, true)
+
+	a.tEditorBody.SetBorder(true)
+	a.tEditorBody.SetInputCapture(a.handleEditorInput)
+	a.tEditorPage = tview.NewFlex().
+		SetDirection(tview.FlexRow).
+		AddItem(a.tEditorHeader, 1, 0, false).
+		AddItem(a.tEditorBody, 0, 1, true)
 
 	// Attempt to get the current working directory. If it fails, set an error message
 	// in both leftWd and rightWd to inform the user.

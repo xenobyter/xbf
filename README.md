@@ -15,6 +15,10 @@ Keyboard-driven dual-pane file manager for the terminal (Go + tview/tcell).
   - readable text files as text
   - binary files as hex dump
   - syntax highlighting for text previews (lexer-based)
+- Editor-ready document model for text files
+  - open current file in an edit session
+  - save with `Ctrl+S`
+  - close with `Esc`
 - Multi-selection per pane
 - File operations:
   - copy
@@ -56,6 +60,7 @@ go run .
 | `r` | Rename current item (input dialog) |
 | `d` / `Del` | Delete selection (or current item), with confirmation |
 | `p` | Open fullscreen preview for current file |
+| `e` | Open current text file in editor session |
 | `q` / `Esc` | Quit application |
 
 Preview page:

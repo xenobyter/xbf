@@ -32,6 +32,8 @@ func normalizeAction(event *tcell.EventKey) string {
 		return "delete"
 	case event.Rune() == 'p':
 		return "preview"
+	case event.Rune() == 'e', event.Rune() == 'E':
+		return "editor"
 	}
 	return ""
 }
@@ -85,6 +87,9 @@ var dirListKeyActions = map[string]actionFunc{
 	},
 	"preview": func(a *App, _ int) {
 		a.openPreview()
+	},
+	"editor": func(a *App, _ int) {
+		a.openTextEditor()
 	},
 }
 

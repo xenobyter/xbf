@@ -286,3 +286,95 @@ func renderHex(data []byte) string {
 	}
 	return b.String()
 }
+
+func (a *App) openTextEditor() {
+	activeList := a.getActiveList()
+	idx := activeList.GetCurrentItem()
+	items := a.getItemsFor(activeList)
+	if idx < 0 || idx >= len(items) {
+		return
+	}
+
+	item := items[idx]
+	if item.IsDir {
+		a.setFooter(a.i18n.T(MsgErrEditDirectory), tcell.ColorYellow)
+		return
+	}
+
+	path := filepath.Join(item.Path, item.Name)
+	doc, err := newDocument(path)
+	if err != nil {
+		a.setFooter(a.i18n.T(MsgErrPreviewOpen)+": "+err.Error(), tcell.ColorRed)
+		return
+	}
+	if doc.Mode == previewModeHex {
+		a.setFooter("Binary files are not editable in the editor yet.", tcell.ColorYellow)
+		return
+	}
+
+	a.document = doc
+	a.tEditorHeader.SetText("Edit: " + path)
+	a.tEditorBody.SetText(doc.Text(), true)
+	a.tEditorBody.SetChangedFunc(func() {
+		if a.document != nil {
+			a.document.SetText(a.tEditorBody.GetText())
+		}
+	})
+	a.tEditorBody.SetOffset(0, 0)
+	a.editorReturn = activeList
+	a.tPages.RemovePage("editor")
+	a.tPages.AddPage("editor", a.tEditorPage, true, true)
+	a.tPages.SwitchToPage("editor")
+	a.tApp.SetFocus(a.tEditorBody)
+}
+
+func (a *App) closeEditor() {
+	if a.tPages == nil {
+		return
+	}
+	a.tPages.RemovePage("editor")
+	returnFocus := a.editorReturn
+	a.editorReturn = nil
+	if returnFocus == nil {
+		returnFocus = a.tLeft
+	}
+	a.tApp.SetFocus(returnFocus)
+	if list, ok := returnFocus.(*tview.List); ok {
+		a.setHeader(a.getWdFor(list))
+		a.setItemInfo(list, list.GetCurrentItem())
+	}
+}
+
+func (a *App) saveEditor() {
+	if a.document == nil {
+		return
+	}
+	if err := a.document.Save(); err != nil {
+		a.setFooter("Save failed: "+err.Error(), tcell.ColorRed)
+		return
+	}
+	a.document.Dirty = false
+	a.setFooter("Saved: "+a.document.Path, tcell.ColorGreen)
+}
+
+func (a *App) handleEditorInput(event *tcell.EventKey) *tcell.EventKey {
+	switch {
+	case event.Key() == tcell.KeyEscape:
+		a.closeEditor()
+		return nil
+	case event.Key() == tcell.KeyCtrlS:
+		a.saveEditor()
+		return nil
+	case event.Key() == tcell.KeyCtrlW:
+		a.closeEditor()
+		return nil
+	case event.Rune() == 'q':
+		a.tApp.Stop()
+		return nil
+	}
+	return event
+}
+
+func (a *App) openEditor() {
+	a.openTextEditor()
+}
