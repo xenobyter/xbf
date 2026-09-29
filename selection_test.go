@@ -18,7 +18,7 @@ func TestSelection(t *testing.T) {
 	}
 
 	// Toggle item1 on
-	s.ToggelItem(item1, pane)
+	s.ToggleItem(item1, pane)
 	if !s.IsSelected("doc.txt", pane) {
 		t.Errorf("expected doc.txt to be selected")
 	}
@@ -27,7 +27,7 @@ func TestSelection(t *testing.T) {
 	}
 
 	// Toggle item2 on
-	s.ToggelItem(item2, pane)
+	s.ToggleItem(item2, pane)
 	if !s.IsSelected("folder", pane) {
 		t.Errorf("expected folder to be selected")
 	}
@@ -62,7 +62,7 @@ func TestSelection(t *testing.T) {
 	}
 
 	// Toggle item1 off
-	s.ToggelItem(item1, pane)
+	s.ToggleItem(item1, pane)
 	if s.IsSelected("doc.txt", pane) {
 		t.Errorf("expected doc.txt to no longer be selected")
 	}
@@ -77,6 +77,35 @@ func TestSelection(t *testing.T) {
 	}
 	if len(s.GetSelectedItems(pane)) != 0 {
 		t.Errorf("expected empty slice from GetSelectedItems after Clear")
+	}
+}
+
+func TestResolveItems(t *testing.T) {
+	pane := tview.NewList()
+	pane.AddItem("first", "", 0, nil)
+	pane.AddItem("second", "", 0, nil)
+	items := []FileInfo{
+		{Name: "first"},
+		{Name: "second"},
+	}
+	app := &App{tLeft: pane, leftItems: items}
+	pane.SetCurrentItem(1)
+
+	resolved := app.resolveItems(pane)
+	if len(resolved) != 1 || resolved[0].Name != "second" {
+		t.Fatalf("resolveItems() = %#v, want the current item", resolved)
+	}
+
+	app.selection.ToggleItem(items[0], pane)
+	resolved = app.resolveItems(pane)
+	if len(resolved) != 1 || resolved[0].Name != "first" {
+		t.Fatalf("resolveItems() = %#v, want selected items to take precedence", resolved)
+	}
+
+	emptyPane := tview.NewList()
+	emptyApp := &App{tLeft: emptyPane}
+	if resolved := emptyApp.resolveItems(emptyPane); len(resolved) != 0 {
+		t.Fatalf("resolveItems() for empty list = %#v, want no items", resolved)
 	}
 }
 

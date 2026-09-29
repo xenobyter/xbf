@@ -281,15 +281,28 @@ func (a *App) refreshPanes() {
 	inactivePane.SetCurrentItem(inactiveCurrentItem)
 }
 
+func (a *App) resolveItems(list *tview.List) []FileInfo {
+	items := a.selection.GetSelectedItems(list)
+	if len(items) > 0 {
+		return items
+	}
+
+	paneItems := a.getItemsFor(list)
+	idx := list.GetCurrentItem()
+	if idx < 0 || idx >= len(paneItems) {
+		return nil
+	}
+	return []FileInfo{paneItems[idx]}
+}
+
 // copySelected copies all selected files from the active pane to the target pane.
 //
 // If no files are selected it copies only the currently highlighted file. Errors are displayed in the footer.
 func (a *App) copySelected() {
 	activeList := a.getActiveList()
-	items := a.selection.GetSelectedItems(activeList)
+	items := a.resolveItems(activeList)
 	if len(items) == 0 {
-		idx := activeList.GetCurrentItem()
-		items = []FileInfo{a.getItemsFor(activeList)[idx]}
+		return
 	}
 	target := a.getTargetWd()
 
@@ -306,10 +319,9 @@ func (a *App) copySelected() {
 // If no files are selected it moves only the currently highlighted file. Errors are displayed in the footer.
 func (a *App) moveSelected() {
 	activeList := a.getActiveList()
-	items := a.selection.GetSelectedItems(activeList)
+	items := a.resolveItems(activeList)
 	if len(items) == 0 {
-		idx := activeList.GetCurrentItem()
-		items = []FileInfo{a.getItemsFor(activeList)[idx]}
+		return
 	}
 	target := a.getTargetWd()
 
@@ -355,16 +367,7 @@ func (a *App) renameSelected(idx int, newName string) {
 // deleteSelected prompts the user for confirmation and deletes selected (or highlighted) files.
 func (a *App) deleteSelected() {
 	activeList := a.getActiveList()
-	items := a.selection.GetSelectedItems(activeList)
-	if len(items) == 0 {
-		idx := activeList.GetCurrentItem()
-		paneItems := a.getItemsFor(activeList)
-		if idx < 0 || idx >= len(paneItems) {
-			return
-		}
-		items = []FileInfo{paneItems[idx]}
-	}
-
+	items := a.resolveItems(activeList)
 	if len(items) == 0 {
 		return
 	}

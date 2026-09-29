@@ -1,7 +1,6 @@
 package main
 
 import (
-	"os"
 	"path/filepath"
 	"strings"
 
@@ -66,7 +65,7 @@ var dirListKeyActions = map[string]actionFunc{
 	},
 	"select": func(a *App, idx int) {
 		activeList := a.getActiveList()
-		a.selection.ToggelItem(a.getItemsFor(activeList)[idx], activeList)
+		a.selection.ToggleItem(a.getItemsFor(activeList)[idx], activeList)
 		a.updateListItem(activeList, idx)
 	},
 	"copy": func(a *App, _ int) {
@@ -98,20 +97,20 @@ var dirListKeyActions = map[string]actionFunc{
 		wd := a.getWdFor(activeList)
 		a.ShowInputDialog(a.i18n.T(MsgTitleInputNewFile), "new_file.txt", func(fileName string) {
 			fileName = strings.TrimSpace(fileName)
-			if fileName == "" {
-				a.setFooter(a.i18n.T(MsgErrEmptyFileName), tcell.ColorRed)
-				return
-			}
-			if filepath.Base(fileName) != fileName || fileName == "." || fileName == ".." {
-				a.setFooter(a.i18n.T(MsgErrInvalidName), tcell.ColorRed)
+			if err := validateNewEntryName(fileName); err != nil {
+				msgKey := MsgErrInvalidName
+				if err == errEmptyEntryName {
+					msgKey = MsgErrEmptyFileName
+				}
+				a.setFooter(a.i18n.T(msgKey), tcell.ColorRed)
 				return
 			}
 			newFilePath := filepath.Join(wd, fileName)
-			if _, err := os.Stat(newFilePath); err == nil {
+			if entryExists(newFilePath) {
 				a.setFooter(a.i18n.T(MsgErrCreateFile, fileName), tcell.ColorRed)
 				return
 			}
-			if err := a.createEmptyFile(newFilePath); err != nil {
+			if err := createEmptyFile(newFilePath); err != nil {
 				a.setFooter(a.i18n.T(MsgErrCreateFile, fileName)+": "+err.Error(), tcell.ColorRed)
 				return
 			}
@@ -124,20 +123,20 @@ var dirListKeyActions = map[string]actionFunc{
 		wd := a.getWdFor(activeList)
 		a.ShowInputDialog(a.i18n.T(MsgTitleInputNewDir), "new_directory", func(dirName string) {
 			dirName = strings.TrimSpace(dirName)
-			if dirName == "" {
-				a.setFooter(a.i18n.T(MsgErrEmptyDirName), tcell.ColorRed)
-				return
-			}
-			if filepath.Base(dirName) != dirName || dirName == "." || dirName == ".." {
-				a.setFooter(a.i18n.T(MsgErrInvalidName), tcell.ColorRed)
+			if err := validateNewEntryName(dirName); err != nil {
+				msgKey := MsgErrInvalidName
+				if err == errEmptyEntryName {
+					msgKey = MsgErrEmptyDirName
+				}
+				a.setFooter(a.i18n.T(msgKey), tcell.ColorRed)
 				return
 			}
 			newDirPath := filepath.Join(wd, dirName)
-			if _, err := os.Stat(newDirPath); err == nil {
+			if entryExists(newDirPath) {
 				a.setFooter(a.i18n.T(MsgErrCreateDir, dirName), tcell.ColorRed)
 				return
 			}
-			if err := a.createDirectory(newDirPath); err != nil {
+			if err := createDirectory(newDirPath); err != nil {
 				a.setFooter(a.i18n.T(MsgErrCreateDir, dirName)+": "+err.Error(), tcell.ColorRed)
 				return
 			}
@@ -149,7 +148,7 @@ var dirListKeyActions = map[string]actionFunc{
 		a.openPreview()
 	},
 	"editor": func(a *App, _ int) {
-		a.openTextEditor()
+		a.openEditor()
 	},
 	"search": func(a *App, _ int) {
 		a.searchActiveList()

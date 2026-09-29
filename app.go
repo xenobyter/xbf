@@ -1,9 +1,6 @@
 package main
 
 import (
-	"os"
-	"strings"
-
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
@@ -288,24 +285,4 @@ func (a *App) rebuildEditorPage(body tview.Primitive) {
 		a.tPages.RemovePage("editor")
 		a.tPages.AddPage("editor", a.tEditorPage, true, true)
 	}
-}
-
-func (a *App) createEmptyFile(path string) error {
-	if strings.TrimSpace(path) == "" {
-		return os.ErrInvalid
-	}
-	if err := os.WriteFile(path, []byte{}, 0o644); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (a *App) createDirectory(path string) error {
-	if strings.TrimSpace(path) == "" {
-		return os.ErrInvalid
-	}
-	if err := os.Mkdir(path, 0o755); err != nil {
-		return err
-	}
-	return nil
 }

@@ -17,9 +17,9 @@ type Selection struct {
 	items map[selectionKey]FileInfo
 }
 
-// ToggelItem adds a file to the selection if it's not already present,
+// ToggleItem adds a file to the selection if it's not already present,
 // or removes it if it is (toggle behavior).
-func (s *Selection) ToggelItem(item FileInfo, pane *tview.List) {
+func (s *Selection) ToggleItem(item FileInfo, pane *tview.List) {
 	if s.items == nil {
 		s.items = make(map[selectionKey]FileInfo)
 	}

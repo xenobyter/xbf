@@ -61,6 +61,11 @@ const (
 	MsgTitleSearch
 	MsgSearchNoMatches
 	MsgSearchMatches
+	MsgEditorTextTitle
+	MsgEditorHexTitle
+	MsgErrEditorSave
+	MsgEditorUnsaved
+	MsgEditorSaved
 )
 
 var translations = map[Lang]map[MsgKey]string{
@@ -101,6 +106,11 @@ var translations = map[Lang]map[MsgKey]string{
 		MsgTitleSearch:         "Search current directory",
 		MsgSearchNoMatches:     "No matching files",
 		MsgSearchMatches:       "Results: %d | Up/Down to select, Enter to confirm",
+		MsgEditorTextTitle:     "Edit: %s",
+		MsgEditorHexTitle:      "Hex editor: %s",
+		MsgErrEditorSave:       "Save failed: %s",
+		MsgEditorUnsaved:       "Unsaved changes",
+		MsgEditorSaved:         "Saved: %s",
 	},
 	LangDE: {
 		MsgCurrentWd:           "Aktuelles Arbeitsverzeichnis: %s",
@@ -139,6 +149,11 @@ var translations = map[Lang]map[MsgKey]string{
 		MsgTitleSearch:         "Aktuelles Verzeichnis durchsuchen",
 		MsgSearchNoMatches:     "Keine passenden Einträge",
 		MsgSearchMatches:       "%d Treffer | Hoch/Runter wählen, Enter bestätigen",
+		MsgEditorTextTitle:     "Bearbeiten: %s",
+		MsgEditorHexTitle:      "Hex-Editor: %s",
+		MsgErrEditorSave:       "Speichern fehlgeschlagen: %s",
+		MsgEditorUnsaved:       "Ungespeicherte Änderungen",
+		MsgEditorSaved:         "Gespeichert: %s",
 	},
 }
 

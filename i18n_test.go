@@ -27,6 +27,21 @@ func TestI18nTranslations(t *testing.T) {
 	if got := en.T(MsgDeleteFile, 2); got != "Deleted 2 items" {
 		t.Errorf("expected formatted English delete success text, got %q", got)
 	}
+	if got := en.T(MsgEditorTextTitle, "/tmp/file.txt"); got != "Edit: /tmp/file.txt" {
+		t.Errorf("expected formatted English editor title, got %q", got)
+	}
+	if got := en.T(MsgEditorHexTitle, "/tmp/file.bin"); got != "Hex editor: /tmp/file.bin" {
+		t.Errorf("expected formatted English hex editor title, got %q", got)
+	}
+	if got := en.T(MsgErrEditorSave, "permission denied"); got != "Save failed: permission denied" {
+		t.Errorf("expected formatted English save error, got %q", got)
+	}
+	if got := en.T(MsgEditorUnsaved); got != "Unsaved changes" {
+		t.Errorf("expected English unsaved status, got %q", got)
+	}
+	if got := en.T(MsgEditorSaved, "/tmp/file.txt"); got != "Saved: /tmp/file.txt" {
+		t.Errorf("expected formatted English saved status, got %q", got)
+	}
 
 	de := &I18n{lang: LangDE}
 	if got := de.T(MsgErrReadDir); got != "Fehler beim Lesen des Verzeichnisses" {
@@ -49,6 +64,21 @@ func TestI18nTranslations(t *testing.T) {
 	}
 	if got := de.T(MsgDeleteFile, 2); got != "2 Elemente gelöscht" {
 		t.Errorf("expected formatted German delete success text, got %q", got)
+	}
+	if got := de.T(MsgEditorTextTitle, "/tmp/datei.txt"); got != "Bearbeiten: /tmp/datei.txt" {
+		t.Errorf("expected formatted German editor title, got %q", got)
+	}
+	if got := de.T(MsgEditorHexTitle, "/tmp/datei.bin"); got != "Hex-Editor: /tmp/datei.bin" {
+		t.Errorf("expected formatted German hex editor title, got %q", got)
+	}
+	if got := de.T(MsgErrEditorSave, "Zugriff verweigert"); got != "Speichern fehlgeschlagen: Zugriff verweigert" {
+		t.Errorf("expected formatted German save error, got %q", got)
+	}
+	if got := de.T(MsgEditorUnsaved); got != "Ungespeicherte Änderungen" {
+		t.Errorf("expected German unsaved status, got %q", got)
+	}
+	if got := de.T(MsgEditorSaved, "/tmp/datei.txt"); got != "Gespeichert: /tmp/datei.txt" {
+		t.Errorf("expected formatted German saved status, got %q", got)
 	}
 }
 
