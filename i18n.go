@@ -58,6 +58,9 @@ const (
 	MsgErrEmptyDirName
 	MsgErrCreateDir
 	MsgCreateDir
+	MsgTitleSearch
+	MsgSearchNoMatches
+	MsgSearchMatches
 )
 
 var translations = map[Lang]map[MsgKey]string{
@@ -95,6 +98,9 @@ var translations = map[Lang]map[MsgKey]string{
 		MsgErrEmptyDirName:     "Directory name cannot be empty",
 		MsgErrCreateDir:        "Error creating directory",
 		MsgCreateDir:           "Created directory: %s",
+		MsgTitleSearch:         "Search current directory",
+		MsgSearchNoMatches:     "No matching files",
+		MsgSearchMatches:       "Results: %d | Up/Down to select, Enter to confirm",
 	},
 	LangDE: {
 		MsgCurrentWd:           "Aktuelles Arbeitsverzeichnis: %s",
@@ -130,6 +136,9 @@ var translations = map[Lang]map[MsgKey]string{
 		MsgErrEmptyDirName:     "Verzeichnisname darf nicht leer sein",
 		MsgErrCreateDir:        "Fehler beim Erstellen des Verzeichnisses",
 		MsgCreateDir:           "Verzeichnis erstellt: %s",
+		MsgTitleSearch:         "Aktuelles Verzeichnis durchsuchen",
+		MsgSearchNoMatches:     "Keine passenden Einträge",
+		MsgSearchMatches:       "%d Treffer | Hoch/Runter wählen, Enter bestätigen",
 	},
 }
 

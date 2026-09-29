@@ -67,6 +67,7 @@ go run .
 | `N` | Create a new directory |
 | `p` | Open fullscreen preview for current file |
 | `e` | Open current file in editor session |
+| `/` | Search the active directory by filename; `↑` / `↓` select a match, `Enter` confirms, `Esc` cancels |
 | `q` / `Esc` | Quit application |
 
 Preview page:

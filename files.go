@@ -42,6 +42,17 @@ func sortFiles(files []FileInfo) {
 	})
 }
 
+func filterFiles(files []FileInfo, query string) []FileInfo {
+	query = strings.ToLower(query)
+	filtered := make([]FileInfo, 0, len(files))
+	for _, file := range files {
+		if strings.Contains(strings.ToLower(file.Name), query) {
+			filtered = append(filtered, file)
+		}
+	}
+	return filtered
+}
+
 // readDir returns information about all entries in the specified directory.
 func readDir(path string) ([]FileInfo, error) {
 	entries, err := os.ReadDir(path)

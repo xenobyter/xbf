@@ -41,20 +41,120 @@ func (a *App) updateList(list *tview.List, path string) {
 		return
 	}
 
-	switch list {
-	case a.tLeft:
+	a.setListItems(list, items)
+}
+
+func (a *App) setListItems(list *tview.List, items []FileInfo) {
+	if list == a.tLeft {
 		a.leftItems = items
-	case a.tRight:
+	} else {
 		a.rightItems = items
 	}
-
+	list.Clear()
 	for _, item := range items {
 		icon := IconFile
 		if item.IsDir {
 			icon = IconFolder
 		}
-		list.AddItem(icon+item.Name, "", 0, nil)
+		text := icon + item.Name
+		if a.selection.IsSelected(item.Name, list) {
+			text = "[red]" + text
+		}
+		list.AddItem(text, "", 0, nil)
 	}
+}
+
+func (a *App) searchActiveList() {
+	list := a.getActiveList()
+	items := append([]FileInfo(nil), a.getItemsFor(list)...)
+	matches := items
+	inputField := tview.NewInputField().
+		SetFieldWidth(48).
+		SetFieldBackgroundColor(tcell.ColorBlack)
+	results := tview.NewList().
+		ShowSecondaryText(false).
+		SetSelectedFocusOnly(false)
+	status := tview.NewTextView().SetTextAlign(tview.AlignCenter)
+
+	updateResults := func(query string) {
+		matches = filterFiles(items, query)
+		results.Clear()
+		for _, item := range matches {
+			icon := IconFile
+			if item.IsDir {
+				icon = IconFolder
+			}
+			results.AddItem(icon+item.Name, "", 0, nil)
+		}
+		if len(matches) == 0 {
+			status.SetText(a.i18n.T(MsgSearchNoMatches))
+			return
+		}
+		results.SetCurrentItem(0)
+		status.SetText(a.i18n.T(MsgSearchMatches, len(matches)))
+	}
+	updateResults("")
+	inputField.SetChangedFunc(updateResults)
+	inputField.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+		switch event.Key() {
+		case tcell.KeyUp:
+			moveSearchSelection(results, -1)
+			return nil
+		case tcell.KeyDown:
+			moveSearchSelection(results, 1)
+			return nil
+		default:
+			return event
+		}
+	})
+	inputField.SetDoneFunc(func(key tcell.Key) {
+		switch key {
+		case tcell.KeyEnter:
+			index := results.GetCurrentItem()
+			if index < 0 || index >= len(matches) {
+				return
+			}
+			selected := matches[index]
+			a.hideModal("searchModal")
+			for itemIndex, item := range a.getItemsFor(list) {
+				if item.Name == selected.Name {
+					list.SetCurrentItem(itemIndex)
+					a.setItemInfo(list, itemIndex)
+					return
+				}
+			}
+		case tcell.KeyEscape:
+			a.hideModal("searchModal")
+		}
+	})
+
+	searchModal := tview.NewFlex().
+		SetDirection(tview.FlexRow).
+		AddItem(inputField, 1, 0, true).
+		AddItem(results, 0, 1, false).
+		AddItem(status, 1, 0, false)
+	searchModal.SetBorder(true).SetTitle(a.i18n.T(MsgTitleSearch)).SetTitleAlign(tview.AlignCenter)
+	searchModal.Box.SetBackgroundColor(tcell.ColorBlack)
+	searchModal.Box.SetBorderColor(tcell.ColorWhite)
+	searchGrid := tview.NewGrid().
+		SetColumns(0, 60, 0).
+		SetRows(0, 14, 0).
+		AddItem(searchModal, 1, 1, 1, 1, 0, 0, true)
+	a.showModal("searchModal", searchGrid, inputField)
+}
+
+func moveSearchSelection(results *tview.List, delta int) {
+	count := results.GetItemCount()
+	if count == 0 {
+		return
+	}
+	index := results.GetCurrentItem() + delta
+	if index < 0 {
+		index = 0
+	} else if index >= count {
+		index = count - 1
+	}
+	results.SetCurrentItem(index)
 }
 
 // updateListItem updates a single item in the list with the current selection state.

@@ -33,6 +33,23 @@ func TestSortFiles(t *testing.T) {
 	}
 }
 
+func TestFilterFiles(t *testing.T) {
+	files := []FileInfo{
+		{Name: "Documents"},
+		{Name: "report.txt"},
+		{Name: "REPORT.md"},
+	}
+
+	got := filterFiles(files, "port")
+	if len(got) != 2 || got[0].Name != "report.txt" || got[1].Name != "REPORT.md" {
+		t.Fatalf("filterFiles() = %#v, want both case-insensitive matches", got)
+	}
+
+	if got := filterFiles(files, "missing"); len(got) != 0 {
+		t.Fatalf("filterFiles() returned %d entries for a non-matching query", len(got))
+	}
+}
+
 func TestFormatFileSize(t *testing.T) {
 	tests := []struct {
 		size int64

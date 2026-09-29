@@ -84,6 +84,11 @@ func TestNormalizeAction(t *testing.T) {
 			expected: "preview",
 		},
 		{
+			name:     "slash searches",
+			event:    tcell.NewEventKey(tcell.KeyRune, '/', tcell.ModNone),
+			expected: "search",
+		},
+		{
 			name:     "KeyDelete deletes",
 			event:    tcell.NewEventKey(tcell.KeyDelete, 0, tcell.ModNone),
 			expected: "delete",
@@ -124,5 +129,28 @@ func TestModalReturnsFocusToOriginalPane(t *testing.T) {
 
 	if a.tApp.GetFocus() != a.tRight {
 		t.Fatalf("expected focus to return to right pane, got %T", a.tApp.GetFocus())
+	}
+}
+
+func TestMoveSearchSelection(t *testing.T) {
+	results := tview.NewList()
+	results.AddItem("one", "", 0, nil)
+	results.AddItem("two", "", 0, nil)
+	results.AddItem("three", "", 0, nil)
+
+	moveSearchSelection(results, 1)
+	if got := results.GetCurrentItem(); got != 1 {
+		t.Fatalf("moving down selected item %d, want 1", got)
+	}
+
+	moveSearchSelection(results, 1)
+	moveSearchSelection(results, 1)
+	if got := results.GetCurrentItem(); got != 2 {
+		t.Fatalf("moving down past the last result selected item %d, want 2", got)
+	}
+
+	moveSearchSelection(results, -1)
+	if got := results.GetCurrentItem(); got != 1 {
+		t.Fatalf("moving up selected item %d, want 1", got)
 	}
 }
