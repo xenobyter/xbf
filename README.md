@@ -42,14 +42,14 @@ Keyboard-driven dual-pane file manager for the terminal (Go + tview/tcell).
 ## Build & Start
 
 ```bash
-go build -o xbf .
+go build -o xbf ./cmd/xbf
 ./xbf
 ```
 
 Or run directly:
 
 ```bash
-go run .
+go run ./cmd/xbf
 ```
 
 ## Keyboard Shortcuts
