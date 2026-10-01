@@ -51,6 +51,7 @@ const (
 	MsgPreviewModeHex
 	MsgPreviewTruncated
 	MsgTitleInputNewFile
+	MsgTitleInputGoTo
 	MsgErrEmptyFileName
 	MsgErrCreateFile
 	MsgCreateFile
@@ -59,6 +60,7 @@ const (
 	MsgErrCreateDir
 	MsgCreateDir
 	MsgTitleSearch
+	MsgErrGoToPath
 	MsgSearchNoMatches
 	MsgSearchMatches
 	MsgEditorTextTitle
@@ -98,6 +100,7 @@ var translations = map[Lang]map[MsgKey]string{
 		MsgPreviewModeHex:      "HEX",
 		MsgPreviewTruncated:    " | truncated to %s",
 		MsgTitleInputNewFile:   "New File",
+		MsgTitleInputGoTo:      "Go to Path",
 		MsgErrEmptyFileName:    "File name cannot be empty",
 		MsgErrCreateFile:       "Error creating file",
 		MsgCreateFile:          "Created file: %s",
@@ -106,6 +109,7 @@ var translations = map[Lang]map[MsgKey]string{
 		MsgErrCreateDir:        "Error creating directory",
 		MsgCreateDir:           "Created directory: %s",
 		MsgTitleSearch:         "Search current directory",
+		MsgErrGoToPath:         "Error opening path",
 		MsgSearchNoMatches:     "No matching files",
 		MsgSearchMatches:       "Results: %d | Up/Down to select, Enter to confirm",
 		MsgEditorTextTitle:     "Edit: %s",
@@ -143,6 +147,7 @@ var translations = map[Lang]map[MsgKey]string{
 		MsgPreviewModeHex:      "HEX",
 		MsgPreviewTruncated:    " | gekürzt auf %s",
 		MsgTitleInputNewFile:   "Neue Datei",
+		MsgTitleInputGoTo:      "Zu Pfad springen",
 		MsgErrEmptyFileName:    "Dateiname darf nicht leer sein",
 		MsgErrCreateFile:       "Fehler beim Erstellen der Datei",
 		MsgCreateFile:          "Datei erstellt: %s",
@@ -151,6 +156,7 @@ var translations = map[Lang]map[MsgKey]string{
 		MsgErrCreateDir:        "Fehler beim Erstellen des Verzeichnisses",
 		MsgCreateDir:           "Verzeichnis erstellt: %s",
 		MsgTitleSearch:         "Aktuelles Verzeichnis durchsuchen",
+		MsgErrGoToPath:         "Fehler beim Öffnen des Pfads",
 		MsgSearchNoMatches:     "Keine passenden Einträge",
 		MsgSearchMatches:       "%d Treffer | Hoch/Runter wählen, Enter bestätigen",
 		MsgEditorTextTitle:     "Bearbeiten: %s",

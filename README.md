@@ -67,6 +67,8 @@ go run .
 | `n` | Create a new empty file |
 | `N` | Create a new directory |
 | `p` | Open fullscreen preview for current file |
+| `g` | Open the path input dialog, prefilled with the current pane path; press `Enter` to jump there |
+| `~` | Jump to the home directory in the active pane |
 | `e` | Open current file in editor session |
 | `/` | Search the active directory by filename; `↑` / `↓` select a match, `Enter` confirms, `Esc` cancels |
 | `.` | Toggle display of hidden files (dotfiles) |

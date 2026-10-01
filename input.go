@@ -37,8 +37,12 @@ func normalizeAction(event *tcell.EventKey) string {
 		return "newdir"
 	case event.Rune() == 'p':
 		return "preview"
+	case event.Rune() == 'g':
+		return "goto"
 	case event.Rune() == 'e', event.Rune() == 'E':
 		return "editor"
+	case event.Rune() == '~':
+		return "home"
 	case event.Rune() == '/':
 		return "search"
 	case event.Rune() == '.':
@@ -148,6 +152,16 @@ var dirListKeyActions = map[string]actionFunc{
 	},
 	"preview": func(a *App, _ int) {
 		a.openPreview()
+	},
+	"goto": func(a *App, _ int) {
+		activeList := a.getActiveList()
+		a.ShowInputDialog(a.i18n.T(MsgTitleInputGoTo), a.getWdFor(activeList), func(path string) {
+			a.goToPath(activeList, path)
+		})
+	},
+	"home": func(a *App, _ int) {
+		activeList := a.getActiveList()
+		a.goHome(activeList)
 	},
 	"editor": func(a *App, _ int) {
 		a.openEditor()

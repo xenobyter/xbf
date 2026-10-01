@@ -84,6 +84,16 @@ func TestNormalizeAction(t *testing.T) {
 			expected: "preview",
 		},
 		{
+			name:     "g opens goto dialog",
+			event:    tcell.NewEventKey(tcell.KeyRune, 'g', tcell.ModNone),
+			expected: "goto",
+		},
+		{
+			name:     "tilde goes home",
+			event:    tcell.NewEventKey(tcell.KeyRune, '~', tcell.ModNone),
+			expected: "home",
+		},
+		{
 			name:     "slash searches",
 			event:    tcell.NewEventKey(tcell.KeyRune, '/', tcell.ModNone),
 			expected: "search",

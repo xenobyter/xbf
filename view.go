@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -202,6 +203,66 @@ func (a *App) changeDir(list *tview.List, wd string) {
 	a.updateList(list, wd)
 	a.setHeader(wd)
 	a.setItemInfo(list, list.GetCurrentItem())
+}
+
+func (a *App) resolveDirectoryPath(baseWd, input string) (string, error) {
+	path := strings.TrimSpace(input)
+	if path == "" {
+		return "", os.ErrInvalid
+	}
+
+	path = os.ExpandEnv(path)
+	if strings.HasPrefix(path, "~") {
+		homeDir, err := os.UserHomeDir()
+		if err != nil {
+			return "", err
+		}
+		switch {
+		case path == "~":
+			path = homeDir
+		case strings.HasPrefix(path, "~/"):
+			path = filepath.Join(homeDir, path[2:])
+		case strings.HasPrefix(path, "~"+string(filepath.Separator)):
+			path = filepath.Join(homeDir, path[2:])
+		default:
+			return "", os.ErrInvalid
+		}
+	}
+
+	if !filepath.IsAbs(path) {
+		path = filepath.Join(baseWd, path)
+	}
+
+	path = filepath.Clean(path)
+	info, err := os.Stat(path)
+	if err != nil {
+		return "", err
+	}
+	if !info.IsDir() {
+		return "", os.ErrInvalid
+	}
+
+	return path, nil
+}
+
+func (a *App) goToPath(list *tview.List, input string) {
+	wd, err := a.resolveDirectoryPath(a.getWdFor(list), input)
+	if err != nil {
+		a.setFooter(a.i18n.T(MsgErrGoToPath)+": "+err.Error(), tcell.ColorRed)
+		return
+	}
+
+	a.changeDir(list, wd)
+}
+
+func (a *App) goHome(list *tview.List) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		a.setFooter(a.i18n.T(MsgErrGoToPath)+": "+err.Error(), tcell.ColorRed)
+		return
+	}
+
+	a.changeDir(list, homeDir)
 }
 
 // enterDirectory navigates into the selected directory entry.
