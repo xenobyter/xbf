@@ -32,6 +32,7 @@ type App struct {
 	rightItems []FileInfo
 
 	selection Selection
+	showHidden bool
 }
 
 // newApp creates a new application instance with all UI components

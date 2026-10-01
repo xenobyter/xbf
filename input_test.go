@@ -89,6 +89,11 @@ func TestNormalizeAction(t *testing.T) {
 			expected: "search",
 		},
 		{
+			name:     "dot toggles hidden",
+			event:    tcell.NewEventKey(tcell.KeyRune, '.', tcell.ModNone),
+			expected: "toggle_hidden",
+		},
+		{
 			name:     "KeyDelete deletes",
 			event:    tcell.NewEventKey(tcell.KeyDelete, 0, tcell.ModNone),
 			expected: "delete",

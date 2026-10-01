@@ -11,6 +11,7 @@ Keyboard-driven dual-pane file manager for the terminal (Go + tview/tcell).
   - directories first
   - then alphabetical (case-insensitive, original casing as tie-breaker)
 - File info in the footer (name + formatted size)
+- Toggle display of hidden files (dotfiles) with status indication
 - Fullscreen file preview page
   - readable text files as text
   - binary files as hex dump
@@ -68,6 +69,7 @@ go run .
 | `p` | Open fullscreen preview for current file |
 | `e` | Open current file in editor session |
 | `/` | Search the active directory by filename; `↑` / `↓` select a match, `Enter` confirms, `Esc` cancels |
+| `.` | Toggle display of hidden files (dotfiles) |
 | `q` / `Esc` | Quit application |
 
 Preview page:

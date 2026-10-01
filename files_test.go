@@ -67,3 +67,44 @@ func TestFormatFileSize(t *testing.T) {
 		}
 	}
 }
+
+func TestFilterHidden(t *testing.T) {
+	files := []FileInfo{
+		{Name: ".git", IsDir: true},
+		{Name: ".gitignore", IsDir: false},
+		{Name: "main.go", IsDir: false},
+		{Name: ".env", IsDir: false},
+		{Name: "src", IsDir: true},
+	}
+
+	expected := []FileInfo{
+		{Name: "main.go", IsDir: false},
+		{Name: "src", IsDir: true},
+	}
+
+	result := filterHidden(files)
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("filterHidden() = %+v, expected %+v", result, expected)
+	}
+
+	// Also test file with IsHidden: true without leading dot (e.g. Windows hidden attribute)
+	windowsHidden := []FileInfo{
+		{Name: "desktop.ini", IsHidden: true},
+		{Name: "normal.txt", IsHidden: false},
+	}
+	resWin := filterHidden(windowsHidden)
+	if len(resWin) != 1 || resWin[0].Name != "normal.txt" {
+		t.Errorf("expected desktop.ini with IsHidden=true to be filtered, got: %+v", resWin)
+	}
+
+	// Empty list
+	if len(filterHidden(nil)) != 0 {
+		t.Errorf("filterHidden(nil) should be empty")
+	}
+
+	// No hidden files
+	noHidden := []FileInfo{{Name: "a.txt"}, {Name: "b.txt"}}
+	if len(filterHidden(noHidden)) != 2 {
+		t.Errorf("filterHidden(noHidden) should keep all files")
+	}
+}

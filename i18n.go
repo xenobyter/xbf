@@ -66,6 +66,8 @@ const (
 	MsgErrEditorSave
 	MsgEditorUnsaved
 	MsgEditorSaved
+	MsgHiddenFilesShown
+	MsgHiddenFilesHidden
 )
 
 var translations = map[Lang]map[MsgKey]string{
@@ -111,6 +113,8 @@ var translations = map[Lang]map[MsgKey]string{
 		MsgErrEditorSave:       "Save failed: %s",
 		MsgEditorUnsaved:       "Unsaved changes",
 		MsgEditorSaved:         "Saved: %s",
+		MsgHiddenFilesShown:    "Hidden files: shown",
+		MsgHiddenFilesHidden:   "Hidden files: hidden",
 	},
 	LangDE: {
 		MsgCurrentWd:           "Aktuelles Arbeitsverzeichnis: %s",
@@ -154,6 +158,8 @@ var translations = map[Lang]map[MsgKey]string{
 		MsgErrEditorSave:       "Speichern fehlgeschlagen: %s",
 		MsgEditorUnsaved:       "Ungespeicherte Änderungen",
 		MsgEditorSaved:         "Gespeichert: %s",
+		MsgHiddenFilesShown:    "Versteckte Dateien: angezeigt",
+		MsgHiddenFilesHidden:   "Versteckte Dateien: ausgeblendet",
 	},
 }
 

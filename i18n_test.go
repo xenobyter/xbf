@@ -42,6 +42,12 @@ func TestI18nTranslations(t *testing.T) {
 	if got := en.T(MsgEditorSaved, "/tmp/file.txt"); got != "Saved: /tmp/file.txt" {
 		t.Errorf("expected formatted English saved status, got %q", got)
 	}
+	if got := en.T(MsgHiddenFilesShown); got != "Hidden files: shown" {
+		t.Errorf("expected English hidden files shown text, got %q", got)
+	}
+	if got := en.T(MsgHiddenFilesHidden); got != "Hidden files: hidden" {
+		t.Errorf("expected English hidden files hidden text, got %q", got)
+	}
 
 	de := &I18n{lang: LangDE}
 	if got := de.T(MsgErrReadDir); got != "Fehler beim Lesen des Verzeichnisses" {
@@ -79,6 +85,12 @@ func TestI18nTranslations(t *testing.T) {
 	}
 	if got := de.T(MsgEditorSaved, "/tmp/datei.txt"); got != "Gespeichert: /tmp/datei.txt" {
 		t.Errorf("expected formatted German saved status, got %q", got)
+	}
+	if got := de.T(MsgHiddenFilesShown); got != "Versteckte Dateien: angezeigt" {
+		t.Errorf("expected German hidden files shown text, got %q", got)
+	}
+	if got := de.T(MsgHiddenFilesHidden); got != "Versteckte Dateien: ausgeblendet" {
+		t.Errorf("expected German hidden files hidden text, got %q", got)
 	}
 }
 

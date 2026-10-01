@@ -41,6 +41,10 @@ func (a *App) updateList(list *tview.List, path string) {
 		return
 	}
 
+	if !a.showHidden {
+		items = filterHidden(items)
+	}
+
 	a.setListItems(list, items)
 }
 
@@ -394,3 +398,28 @@ func (a *App) deleteSelected() {
 		}
 	})
 }
+
+// toggleHidden toggles the display of hidden files, refreshes both panes, and updates the status line.
+func (a *App) toggleHidden() {
+	a.showHidden = !a.showHidden
+
+	a.updateList(a.tLeft, a.getWdFor(a.tLeft))
+	a.updateList(a.tRight, a.getWdFor(a.tRight))
+
+	activeList := a.getActiveList()
+	if count := activeList.GetItemCount(); count > 0 {
+		idx := activeList.GetCurrentItem()
+		if idx >= count {
+			activeList.SetCurrentItem(count - 1)
+		}
+	}
+
+	msgKey := MsgHiddenFilesHidden
+	color := tcell.ColorYellow
+	if a.showHidden {
+		msgKey = MsgHiddenFilesShown
+		color = tcell.ColorGreen
+	}
+	a.setFooter(a.i18n.T(msgKey), color)
+}
+

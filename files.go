@@ -9,10 +9,11 @@ import (
 
 // FileInfo holds basic metadata about a file or directory entry.
 type FileInfo struct {
-	Name  string
-	Path  string
-	IsDir bool
-	Size  int64
+	Name     string
+	Path     string
+	IsDir    bool
+	Size     int64
+	IsHidden bool
 }
 
 // getWd returns the current working directory.
@@ -53,6 +54,17 @@ func filterFiles(files []FileInfo, query string) []FileInfo {
 	return filtered
 }
 
+// filterHidden removes hidden entries from the slice.
+func filterHidden(files []FileInfo) []FileInfo {
+	filtered := make([]FileInfo, 0, len(files))
+	for _, file := range files {
+		if !file.IsHidden && !strings.HasPrefix(file.Name, ".") {
+			filtered = append(filtered, file)
+		}
+	}
+	return filtered
+}
+
 // readDir returns information about all entries in the specified directory.
 func readDir(path string) ([]FileInfo, error) {
 	entries, err := os.ReadDir(path)
@@ -69,10 +81,11 @@ func readDir(path string) ([]FileInfo, error) {
 		}
 
 		files = append(files, FileInfo{
-			Name:  entry.Name(),
-			Path:  path,
-			IsDir: entry.IsDir(),
-			Size:  info.Size(),
+			Name:     entry.Name(),
+			Path:     path,
+			IsDir:    entry.IsDir(),
+			Size:     info.Size(),
+			IsHidden: isHidden(entry.Name(), path, info),
 		})
 	}
 
