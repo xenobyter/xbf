@@ -48,6 +48,8 @@ func normalizeAction(event *tcell.EventKey) string {
 		return "search"
 	case event.Rune() == '.':
 		return "toggle_hidden"
+	case event.Rune() == '!':
+		return "shell"
 	}
 	return ""
 }
@@ -172,6 +174,9 @@ var dirListKeyActions = map[string]actionFunc{
 	},
 	"toggle_hidden": func(a *App, _ int) {
 		a.toggleHidden()
+	},
+	"shell": func(a *App, _ int) {
+		a.openShell()
 	},
 }
 

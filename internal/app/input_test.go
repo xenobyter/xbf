@@ -104,6 +104,11 @@ func TestNormalizeAction(t *testing.T) {
 			expected: "toggle_hidden",
 		},
 		{
+			name:     "bang opens command dialog",
+			event:    tcell.NewEventKey(tcell.KeyRune, '!', tcell.ModNone),
+			expected: "shell",
+		},
+		{
 			name:     "KeyDelete deletes",
 			event:    tcell.NewEventKey(tcell.KeyDelete, 0, tcell.ModNone),
 			expected: "delete",

@@ -70,6 +70,7 @@ go run ./cmd/xbf
 | `g` | Open the path input dialog, prefilled with the current pane path; press `Enter` to jump there |
 | `~` | Jump to the home directory in the active pane |
 | `e` | Open current file in editor session |
+| `!` | Open command input dialog and run one non-interactive command in the active pane path (captured output window) |
 | `/` | Search the active directory by filename; `↑` / `↓` select a match, `Enter` confirms, `Esc` cancels |
 | `.` | Toggle display of hidden files (dotfiles) |
 | `q` / `Esc` | Quit application |

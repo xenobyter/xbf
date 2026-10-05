@@ -48,6 +48,36 @@ func TestI18nTranslations(t *testing.T) {
 	if got := en.T(MsgHiddenFilesHidden); got != "Hidden files: hidden" {
 		t.Errorf("expected English hidden files hidden text, got %q", got)
 	}
+	if got := en.T(MsgTitleInputCommand); got != "Run Command" {
+		t.Errorf("expected English command input title, got %q", got)
+	}
+	if got := en.T(MsgErrEmptyCommand); got != "Command cannot be empty" {
+		t.Errorf("expected English empty command error, got %q", got)
+	}
+	if got := en.T(MsgErrCommandRun, "exit status 1"); got != "Command failed: exit status 1" {
+		t.Errorf("expected formatted English command error, got %q", got)
+	}
+	if got := en.T(MsgCommandRan, "ls"); got != "Command finished: ls" {
+		t.Errorf("expected formatted English command success text, got %q", got)
+	}
+	if got := en.T(MsgErrInteractiveCommandBlocked); got != "Interactive commands are blocked in this mode" {
+		t.Errorf("expected English interactive command blocked text, got %q", got)
+	}
+	if got := en.T(MsgErrCommandSuspend); got != "Could not suspend UI for command execution" {
+		t.Errorf("expected English suspend error text, got %q", got)
+	}
+	if got := en.T(MsgCommandOutputTitle); got != "Command Output" {
+		t.Errorf("expected English command output title, got %q", got)
+	}
+	if got := en.T(MsgCommandOutputHint); got != "Esc/q close | Up/Down scroll | PgUp/PgDn page" {
+		t.Errorf("expected English command output hint, got %q", got)
+	}
+	if got := en.T(MsgCommandOutputEmpty); got != "(no output)" {
+		t.Errorf("expected English empty output text, got %q", got)
+	}
+	if got := en.T(MsgCommandOutputTruncated); got != "Output truncated" {
+		t.Errorf("expected English truncated output text, got %q", got)
+	}
 
 	de := &I18n{lang: LangDE}
 	if got := de.T(MsgErrReadDir); got != "Fehler beim Lesen des Verzeichnisses" {
@@ -91,6 +121,36 @@ func TestI18nTranslations(t *testing.T) {
 	}
 	if got := de.T(MsgHiddenFilesHidden); got != "Versteckte Dateien: ausgeblendet" {
 		t.Errorf("expected German hidden files hidden text, got %q", got)
+	}
+	if got := de.T(MsgTitleInputCommand); got != "Befehl ausführen" {
+		t.Errorf("expected German command input title, got %q", got)
+	}
+	if got := de.T(MsgErrEmptyCommand); got != "Befehl darf nicht leer sein" {
+		t.Errorf("expected German empty command error, got %q", got)
+	}
+	if got := de.T(MsgErrCommandRun, "Status 1"); got != "Befehl fehlgeschlagen: Status 1" {
+		t.Errorf("expected formatted German command error, got %q", got)
+	}
+	if got := de.T(MsgCommandRan, "ls"); got != "Befehl abgeschlossen: ls" {
+		t.Errorf("expected formatted German command success text, got %q", got)
+	}
+	if got := de.T(MsgErrInteractiveCommandBlocked); got != "Interaktive Befehle sind in diesem Modus gesperrt" {
+		t.Errorf("expected German interactive command blocked text, got %q", got)
+	}
+	if got := de.T(MsgErrCommandSuspend); got != "UI konnte für die Befehlsausführung nicht pausiert werden" {
+		t.Errorf("expected German suspend error text, got %q", got)
+	}
+	if got := de.T(MsgCommandOutputTitle); got != "Befehlsausgabe" {
+		t.Errorf("expected German command output title, got %q", got)
+	}
+	if got := de.T(MsgCommandOutputHint); got != "Esc/q schließen | Hoch/Runter scrollen | PgUp/PgDn seitenweise" {
+		t.Errorf("expected German command output hint, got %q", got)
+	}
+	if got := de.T(MsgCommandOutputEmpty); got != "(keine Ausgabe)" {
+		t.Errorf("expected German empty output text, got %q", got)
+	}
+	if got := de.T(MsgCommandOutputTruncated); got != "Ausgabe gekürzt" {
+		t.Errorf("expected German truncated output text, got %q", got)
 	}
 }
 

@@ -70,6 +70,16 @@ const (
 	MsgEditorSaved
 	MsgHiddenFilesShown
 	MsgHiddenFilesHidden
+	MsgTitleInputCommand
+	MsgErrEmptyCommand
+	MsgErrCommandRun
+	MsgCommandRan
+	MsgErrInteractiveCommandBlocked
+	MsgErrCommandSuspend
+	MsgCommandOutputTitle
+	MsgCommandOutputHint
+	MsgCommandOutputEmpty
+	MsgCommandOutputTruncated
 )
 
 var translations = map[Lang]map[MsgKey]string{
@@ -119,6 +129,16 @@ var translations = map[Lang]map[MsgKey]string{
 		MsgEditorSaved:         "Saved: %s",
 		MsgHiddenFilesShown:    "Hidden files: shown",
 		MsgHiddenFilesHidden:   "Hidden files: hidden",
+		MsgTitleInputCommand:   "Run Command",
+		MsgErrEmptyCommand:     "Command cannot be empty",
+		MsgErrCommandRun:       "Command failed: %s",
+		MsgCommandRan:          "Command finished: %s",
+		MsgErrInteractiveCommandBlocked: "Interactive commands are blocked in this mode",
+		MsgErrCommandSuspend:   "Could not suspend UI for command execution",
+		MsgCommandOutputTitle:  "Command Output",
+		MsgCommandOutputHint:   "Esc/q close | Up/Down scroll | PgUp/PgDn page",
+		MsgCommandOutputEmpty:  "(no output)",
+		MsgCommandOutputTruncated: "Output truncated",
 	},
 	LangDE: {
 		MsgCurrentWd:           "Aktuelles Arbeitsverzeichnis: %s",
@@ -166,6 +186,16 @@ var translations = map[Lang]map[MsgKey]string{
 		MsgEditorSaved:         "Gespeichert: %s",
 		MsgHiddenFilesShown:    "Versteckte Dateien: angezeigt",
 		MsgHiddenFilesHidden:   "Versteckte Dateien: ausgeblendet",
+		MsgTitleInputCommand:   "Befehl ausführen",
+		MsgErrEmptyCommand:     "Befehl darf nicht leer sein",
+		MsgErrCommandRun:       "Befehl fehlgeschlagen: %s",
+		MsgCommandRan:          "Befehl abgeschlossen: %s",
+		MsgErrInteractiveCommandBlocked: "Interaktive Befehle sind in diesem Modus gesperrt",
+		MsgErrCommandSuspend:   "UI konnte für die Befehlsausführung nicht pausiert werden",
+		MsgCommandOutputTitle:  "Befehlsausgabe",
+		MsgCommandOutputHint:   "Esc/q schließen | Hoch/Runter scrollen | PgUp/PgDn seitenweise",
+		MsgCommandOutputEmpty:  "(keine Ausgabe)",
+		MsgCommandOutputTruncated: "Ausgabe gekürzt",
 	},
 }
 
